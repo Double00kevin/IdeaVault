@@ -3,7 +3,7 @@
 import logging
 import time
 
-from pipeline.analysis.analyze import IdeaBrief, analyze_signal, create_client
+from pipeline.analysis.analyze import IdeaBrief, analyze_signal, classify_signal, create_client
 from pipeline.config import load_config
 from pipeline.prefilter import (
     filter_devto,
@@ -130,19 +130,38 @@ def _analyze_batch(
     formatter,
     source_type: str,
     ideas: list[IdeaBrief],
-) -> int:
-    """Analyze a batch of signals and append passing ideas. Returns count analyzed."""
-    count = 0
+) -> tuple[int, int]:
+    """Two-stage analysis: classify with Haiku, then analyze with Sonnet.
+
+    Returns (total_classified, total_analyzed).
+    """
+    classified = 0
+    analyzed = 0
+
     for signal in signals:
         text, links = formatter(signal)
+
+        # Stage 1: Classify with Haiku (fast + cheap)
+        result = classify_signal(claude_client, text)
+        classified += 1
+
+        if result.verdict == "skip":
+            logger.debug("Skipped signal (%s): %s", result.category, result.reason)
+            continue
+
+        logger.debug("Signal passed classify (%s): %s", result.category, result.reason)
+
+        # Stage 2: Full analysis with Sonnet (only for passing signals)
         brief = analyze_signal(claude_client, text, links, source_type)
+        analyzed += 1
+
         if brief and brief.confidence_score >= MIN_CONFIDENCE:
             ideas.append(brief)
         elif brief:
             logger.debug("Discarded low-confidence idea: %s (%d)",
                          brief.title, brief.confidence_score)
-        count += 1
-    return count
+
+    return classified, analyzed
 
 
 # ── Main pipeline ──────────────────────────────────────────────────────
@@ -191,10 +210,13 @@ def run() -> None:
     news_filtered = filter_newsapi(news_signals)
     trend_filtered = filter_trends(trend_signals)
 
-    # Step 3: Analyze with Claude API
-    logger.info("Analyzing signals with Claude API...")
+    # Step 3: Two-stage analysis with Claude API
+    # Stage 1 (Haiku): classify signals as pass/skip — fast + cheap
+    # Stage 2 (Sonnet): full analysis on passing signals only
+    logger.info("Two-stage analysis: classify (Haiku) then analyze (Sonnet)...")
     claude_client = create_client(config.anthropic_api_key)
     ideas: list[IdeaBrief] = []
+    total_classified = 0
     total_analyzed = 0
 
     batches = [
@@ -209,12 +231,14 @@ def run() -> None:
     ]
 
     for signals, formatter, source_type in batches:
-        total_analyzed += _analyze_batch(
+        classified, analyzed = _analyze_batch(
             claude_client, signals, formatter, source_type, ideas,
         )
+        total_classified += classified
+        total_analyzed += analyzed
 
-    logger.info("Analyzed %d signals, produced %d ideas above confidence threshold",
-                total_analyzed, len(ideas))
+    logger.info("Classified %d signals, analyzed %d (passed classify), produced %d ideas",
+                total_classified, total_analyzed, len(ideas))
 
     # Step 4: Push to Cloudflare (dedup happens in Workers)
     if ideas:

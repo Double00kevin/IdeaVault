@@ -28,6 +28,24 @@ class IdeaBrief:
     source_type: str = ""  # reddit, google_trends, producthunt
 
 
+CLASSIFY_PROMPT = """You are a startup signal classifier. Determine if the following signal represents a real startup demand signal — meaning it reveals a problem people would pay to solve, a market gap, or a trend with commercial potential.
+
+Input signal:
+{signal}
+
+Respond with ONLY valid JSON (no markdown, no code fences):
+{{
+  "verdict": "pass" or "skip",
+  "reason": "One sentence explaining why (under 100 chars)",
+  "category": "one of: pain_point, market_gap, rising_trend, tool_demand, workflow_friction, other"
+}}
+
+Guidelines:
+- PASS signals that reveal unmet needs, complaints about existing tools, requests for solutions, emerging markets, or high-engagement discussions about building something
+- SKIP generic news, self-promotion, tutorials without pain points, memes, already-solved problems, or signals too vague to extract a startup idea from
+- Be selective — only ~40-60% of signals should pass"""
+
+
 ANALYSIS_PROMPT = """You are an expert startup analyst. Analyze the following demand signal and produce a structured startup idea brief.
 
 Input signal:
@@ -61,9 +79,56 @@ Be specific with market sizes (use dollar amounts). Be honest about confidence.
 If the signal is weak or not really a startup idea, give a low score (under 30)."""
 
 
+@dataclass
+class ClassifyResult:
+    """Result of stage-1 signal classification."""
+
+    verdict: str  # "pass" or "skip"
+    reason: str
+    category: str
+
+
 def create_client(api_key: str) -> anthropic.Anthropic:
     """Create an Anthropic client."""
     return anthropic.Anthropic(api_key=api_key)
+
+
+def classify_signal(
+    client: anthropic.Anthropic,
+    signal_text: str,
+) -> ClassifyResult:
+    """Stage 1: Classify a signal as pass/skip using Haiku (fast + cheap)."""
+    try:
+        message = client.messages.create(
+            model="claude-haiku-4-5-20251001",
+            max_tokens=200,
+            messages=[
+                {
+                    "role": "user",
+                    "content": CLASSIFY_PROMPT.format(signal=signal_text),
+                }
+            ],
+        )
+
+        raw_text = message.content[0].text.strip()
+        if raw_text.startswith("```"):
+            raw_text = raw_text.split("\n", 1)[1]
+            if raw_text.endswith("```"):
+                raw_text = raw_text[:-3].strip()
+
+        data = json.loads(raw_text)
+        return ClassifyResult(
+            verdict=data.get("verdict", "skip"),
+            reason=data.get("reason", ""),
+            category=data.get("category", "other"),
+        )
+
+    except (json.JSONDecodeError, KeyError, TypeError) as e:
+        logger.warning("Failed to parse classify response: %s", e)
+        return ClassifyResult(verdict="pass", reason="classify failed, defaulting to pass", category="other")
+    except anthropic.APIError as e:
+        logger.error("Claude API error during classify: %s", e)
+        return ClassifyResult(verdict="pass", reason="API error, defaulting to pass", category="other")
 
 
 def analyze_signal(

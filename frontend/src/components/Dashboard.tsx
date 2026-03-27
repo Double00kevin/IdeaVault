@@ -27,18 +27,32 @@ function DashboardContent() {
   const [saved, setSaved] = useState<SavedIdea[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [digestFreq, setDigestFreq] = useState<string>("off");
+  const [digestEmail, setDigestEmail] = useState<string>("");
+  const [digestSaving, setDigestSaving] = useState(false);
 
   useEffect(() => {
     if (!isSignedIn) return;
     (async () => {
       try {
         const token = await getToken();
-        const res = await fetch(`${API_BASE}/saved`, {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-        if (!res.ok) throw new Error(`API error: ${res.status}`);
-        const data = await res.json();
-        setSaved(data.saved);
+        const [savedRes, digestRes] = await Promise.all([
+          fetch(`${API_BASE}/saved`, {
+            headers: { Authorization: `Bearer ${token}` },
+          }),
+          fetch(`${API_BASE}/digest/preferences`, {
+            headers: { Authorization: `Bearer ${token}` },
+          }),
+        ]);
+        if (savedRes.ok) {
+          const data = await savedRes.json();
+          setSaved(data.saved);
+        }
+        if (digestRes.ok) {
+          const prefs = await digestRes.json();
+          setDigestFreq(prefs.frequency ?? "off");
+          if (prefs.email) setDigestEmail(prefs.email);
+        }
       } catch (e) {
         setError(e instanceof Error ? e.message : "Failed to load saved ideas");
       } finally {
@@ -46,6 +60,25 @@ function DashboardContent() {
       }
     })();
   }, [isSignedIn]);
+
+  async function saveDigestPrefs() {
+    setDigestSaving(true);
+    try {
+      const token = await getToken();
+      await fetch(`${API_BASE}/digest/preferences`, {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email: digestEmail, frequency: digestFreq }),
+      });
+    } catch {
+      // Silently fail
+    } finally {
+      setDigestSaving(false);
+    }
+  }
 
   async function unsave(ideaId: string) {
     const token = await getToken();
@@ -79,6 +112,48 @@ function DashboardContent() {
         <p className="text-sm text-text-secondary mt-1">
           {saved.length} saved idea{saved.length !== 1 ? "s" : ""}
         </p>
+      </div>
+
+      {/* Digest preferences */}
+      <div className="border border-border rounded bg-surface p-4 mb-6">
+        <h2 className="text-sm font-bold text-text-primary mb-2">Email Digest</h2>
+        <div className="flex flex-wrap items-end gap-3">
+          <div>
+            <label htmlFor="digest-email" className="text-xs text-text-secondary block mb-1">
+              Email
+            </label>
+            <input
+              id="digest-email"
+              type="email"
+              value={digestEmail}
+              onChange={(e) => setDigestEmail(e.target.value)}
+              placeholder={user?.primaryEmailAddress?.emailAddress ?? "you@example.com"}
+              className="border border-border rounded px-2 py-1 bg-surface text-text-primary text-sm w-56"
+            />
+          </div>
+          <div>
+            <label htmlFor="digest-freq" className="text-xs text-text-secondary block mb-1">
+              Frequency
+            </label>
+            <select
+              id="digest-freq"
+              value={digestFreq}
+              onChange={(e) => setDigestFreq(e.target.value)}
+              className="border border-border rounded px-2 py-1 bg-surface text-text-primary text-sm"
+            >
+              <option value="off">Off</option>
+              <option value="weekly">Weekly</option>
+              <option value="daily">Daily</option>
+            </select>
+          </div>
+          <button
+            onClick={saveDigestPrefs}
+            disabled={digestSaving}
+            className="bg-accent text-white px-3 py-1 rounded text-sm hover:opacity-90 disabled:opacity-50 cursor-pointer"
+          >
+            {digestSaving ? "Saving..." : "Save"}
+          </button>
+        </div>
       </div>
 
       {loading && (
