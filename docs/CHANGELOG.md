@@ -4,6 +4,11 @@ All notable changes to IdeaVault will be documented in this file.
 
 ## [Unreleased]
 
+### 2026-03-27 — bc1a701: Stripe checkout session + Pro CTA button
+- feat: POST /api/stripe/checkout creates Stripe Checkout Session (subscription mode)
+- feat: ProCheckout React island replaces static CTA — Clerk auth, redirect to Stripe hosted checkout
+- feat: Stripe env secrets wired into Workers (STRIPE_SECRET_KEY, STRIPE_PRICE_ID)
+
 ### 2026-03-27 — 5637c8b: Sprint 4 — pages, favicon, Stripe, rate limiting
 - feat: About page (/about), Pro pricing page (/pro), 404 page
 - feat: SVG favicon (blue rounded square with "IV")

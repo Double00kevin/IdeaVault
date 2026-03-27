@@ -5,7 +5,7 @@
 IdeaVault is an AI-powered startup idea discovery SaaS platform. It scrapes demand signals from 8 sources (Reddit, Hacker News, Product Hunt, GitHub Trending, Dev.to, Lobste.rs, NewsAPI, Google Trends), analyzes them via Claude API, and serves structured idea briefs through a web app with free/pro/API monetization tiers.
 
 - **Last updated:** 2026-03-27
-- **Status:** Sprint 4 — Monetization + Launch (pages, Stripe, rate limiting deployed)
+- **Status:** Sprint 4 — Monetization + Launch (Stripe checkout wired up, domain + launch remaining)
 
 ## Architecture
 

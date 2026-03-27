@@ -4,9 +4,11 @@ AI-powered startup idea discovery platform. Scrapes demand signals from 8 source
 
 ## Status
 
-Sprint 2 complete. Pipeline operational — 60 ideas in production from first run (2026-03-27).
+Sprint 4 (Monetization + Launch) — feature-complete, domain + launch remaining.
 
 **Live:** Workers API at `https://ideavault-api.double00kevin.workers.dev`
+
+**What's built:** 8-source pipeline → Claude two-stage analysis → D1 storage → Astro frontend with Clerk auth, saved ideas/ratings, email digests, Stripe Pro subscriptions, rate limiting.
 
 ## Architecture
 
@@ -36,6 +38,10 @@ KITT (Python 3.12)                              Cloudflare
 - **Cloudflare D1** stores ideas with JSON columns and normalized title dedup
 - **Astro + React islands + Tailwind** frontend with data-forward card design, filters, a11y
 - **OG images** auto-generated per idea for social sharing
+- **Clerk auth** with JWT verification in Workers, save/rate ideas
+- **Stripe** Pro subscriptions with checkout sessions + webhook lifecycle
+- **Rate limiting** at edge (free: 50/day, pro: 1000/day)
+- **Email digests** via Resend with user frequency preferences
 
 ## Project Structure
 
@@ -52,8 +58,8 @@ IdeaVault/
     migrations/        # D1 SQL schema
     test/              # vitest + miniflare tests
   frontend/            # Astro + React islands + Tailwind (CF Pages)
-    src/components/    # IdeaCard, IdeaFeed (React islands)
-    src/pages/         # index, /ideas/[id]
+    src/components/    # IdeaCard, IdeaFeed, SaveButton, ProCheckout, HeaderAuth
+    src/pages/         # index, /ideas/[id], /dashboard, /pro, /about, 404
     src/layouts/       # BaseLayout with SEO meta tags
   systemd/             # Timer + service for daily pipeline run
   docs/                # Changelog, roadmap, open items

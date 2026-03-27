@@ -43,7 +43,7 @@
 - [x] Stripe webhook handler (checkout, subscription update/delete)
 - [x] Rate limiting middleware (free: 50/day, pro: 1000/day)
 - [x] Subscription status endpoint + D1 tables
-- [ ] Stripe product/price setup + checkout session creation
-- [ ] Wire Pro CTA button to Stripe Checkout
+- [x] Stripe product/price setup + checkout session creation
+- [x] Wire Pro CTA button to Stripe Checkout
 - [ ] Domain + DNS setup
 - [ ] Launch (Product Hunt, Reddit, HN)
