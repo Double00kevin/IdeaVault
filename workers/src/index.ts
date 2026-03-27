@@ -3,6 +3,7 @@ import { cors } from "hono/cors";
 import { ingestHandler } from "./routes/ingest";
 import { ideasHandler } from "./routes/ideas";
 import { healthHandler } from "./routes/health";
+import { ogHandler } from "./routes/og";
 
 export interface Env {
   DB: D1Database;
@@ -22,6 +23,7 @@ app.use("/api/*", cors({
 app.route("/api/ingest", ingestHandler);
 app.route("/api/ideas", ideasHandler);
 app.route("/api/health", healthHandler);
+app.route("/api/og", ogHandler);
 
 // Catch-all 404
 app.all("*", (c) => c.json({ error: "Not found" }, 404));

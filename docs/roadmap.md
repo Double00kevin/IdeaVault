@@ -9,17 +9,20 @@
 - [x] Git init + initial commit
 
 ## Sprint 2 — Core Pipeline + API + Frontend (current)
-- [ ] Reddit scraper (PRAW) + domain-specific subreddits
-- [ ] Google Trends scraper (pytrends, optional enrichment)
-- [ ] Product Hunt scraper (GraphQL API, date-filtered)
-- [ ] Pre-filter top 30 signals by engagement
-- [ ] Claude API analysis module (JSON parsing, confidence rubric)
-- [ ] D1 schema + migrations
-- [ ] Workers API with Hono (ingest webhook HMAC, list, get, health)
-- [ ] Dedup in Workers (UNIQUE + fuzzy word-set)
-- [ ] Astro + React islands frontend (idea feed, cards, filters)
-- [ ] OG image generation per idea
-- [ ] systemd timer for daily pipeline run
+- [x] Reddit scraper (PRAW) + domain-specific subreddits
+- [x] Google Trends scraper (pytrends, optional enrichment)
+- [x] Product Hunt scraper (GraphQL API, date-filtered)
+- [x] Pre-filter top 30 signals by engagement
+- [x] Claude API analysis module (JSON parsing, confidence rubric)
+- [x] D1 schema + migrations (deployed to Cloudflare)
+- [x] Workers API with Hono (ingest webhook HMAC, list, get, health)
+- [x] Dedup in Workers (UNIQUE + fuzzy word-set)
+- [x] Astro + React islands frontend (idea feed, cards, filters)
+- [x] OG image generation per idea (SVG endpoint)
+- [x] systemd timer for daily pipeline run
+- [x] Test infrastructure (15 pytest tests passing, vitest config)
+- [ ] Deploy Workers with OG endpoint (pending redeploy)
+- [ ] First pipeline run (waiting on Reddit API + Anthropic key)
 
 ## Sprint 3 — Auth + Polish
 - [ ] User auth (Clerk recommended)

@@ -1,18 +1,23 @@
 # Open Items
 
 ## Decisions Needed
-- [ ] Product name / domain (working name: IdeaVault)
-- [ ] Auth approach: custom JWT vs Clerk
-- [ ] Pro tier pricing: $9/mo vs $19/mo vs tiered
-- [ ] Core user persona definition
+- [ ] Product name / domain (working name: IdeaVault, need to check availability)
+- [x] Auth approach → Clerk recommended (Sprint 3)
+- [x] Pro tier pricing → $12/mo (decided in office hours)
+- [x] Core user persona → solo indie hacker with day job
 
 ## Technical Questions
-- [ ] D1 row limits — will we hit them at scale?
-- [ ] R2 usage pattern — store raw scrape data or just analyzed output?
-- [ ] KITT->CF auth pattern — webhook secret vs API token vs mTLS
+- [x] D1 row limits → 10GB free, fine for year 1
+- [x] R2 usage → not needed for MVP, raw data stays on KITT
+- [x] KITT->CF auth → HMAC-SHA256 with timestamp replay protection
 
 ## Research Needed
-- [ ] Ideabrowser.com feature audit + pricing analysis
-- [ ] Reddit API rate limits for PRAW
-- [ ] Product Hunt API access requirements
-- [ ] Google Trends API reliability (pytrends is unofficial)
+- [x] Ideabrowser.com audit → $999/yr Pro, shallow analysis, launched May 2025
+- [ ] Reddit API rate limits for PRAW (waiting on API approval)
+- [x] Product Hunt API → GraphQL v2, requires OAuth token
+- [x] Google Trends → pytrends is unofficial, demoted to optional enrichment
+
+## Waiting On
+- [ ] Reddit API approval (application submitted 2026-03-27)
+- [ ] Anthropic API key (need to add to pipeline/.env)
+- [ ] Product Hunt API token (need to apply)
