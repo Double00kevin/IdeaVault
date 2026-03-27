@@ -30,7 +30,7 @@ KITT (Python 3.12)                              Cloudflare
 ```
 
 - **Ingestion pipeline** (Python 3.12) runs on KITT, scrapes 10 subreddits + Product Hunt + Google Trends
-- **Pre-filter** keeps top 30 signals by engagement, sends to Claude API (~$0.60/day)
+- **Pre-filter** keeps top 30 signals by engagement before Claude API analysis
 - **Claude API analysis** produces structured idea briefs with market sizing, competitors, build complexity, confidence score (0-100)
 - **Cloudflare Workers** (Hono) API with HMAC-authenticated ingest webhook, cursor-paginated list, fuzzy dedup
 - **Cloudflare D1** stores ideas with JSON columns and normalized title dedup
@@ -59,13 +59,6 @@ IdeaVault/
   docs/                # Changelog, roadmap, open items
   decisions/           # Architecture decision records
 ```
-
-## Monetization
-
-| Tier | Price | Features |
-|------|-------|----------|
-| Free | $0 | 3 ideas/day, browse feed |
-| Pro | $12/mo | Unlimited, save, filter, search |
 
 ## Development
 
