@@ -3,80 +3,106 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 import ProCheckout from "../components/ProCheckout";
 ---
 
-<BaseLayout title="Go Pro — AIdeaPulse" description="Unlock saved ideas, ratings, email digests, and API access.">
-  <div class="space-y-6">
+<BaseLayout title="Go Pro — AIdeaPulse" description="Unlock 1,000 ideas per day, daily email digests, and priority support.">
+  <div class="space-y-8">
     <div>
-      <h1 class="text-lg font-bold text-text-primary">AIdeaPulse Pro</h1>
-      <p class="text-sm text-text-secondary mt-1">
-        Save ideas, rate them, get weekly digests, and access the API.
+      <h1 class="text-2xl font-bold text-text-primary">AIdeaPulse Pro</h1>
+      <p class="text-text-secondary mt-2">
+        Everything in Free, plus more ideas, daily digests, and priority support.
       </p>
     </div>
 
     <!-- Pricing cards -->
-    <div class="grid gap-4 sm:grid-cols-2">
+    <div class="grid gap-6 sm:grid-cols-2">
       <!-- Free tier -->
-      <div class="border border-border rounded bg-surface p-5">
-        <h2 class="font-bold text-text-primary">Free</h2>
-        <p class="text-2xl font-bold text-text-primary mt-1">$0</p>
-        <p class="text-xs text-text-secondary mb-4">Forever</p>
-        <ul class="text-sm text-text-secondary space-y-2">
+      <div class="border border-white/10 rounded-xl bg-surface p-6">
+        <h2 class="font-bold text-text-primary text-lg">Free</h2>
+        <p class="text-3xl font-bold text-text-primary mt-2">$0</p>
+        <p class="text-sm text-text-secondary mb-5">Forever</p>
+        <ul class="text-sm text-text-secondary space-y-3">
           <li class="flex items-center gap-2">
-            <span class="text-complexity-low">&#10003;</span> Browse all ideas daily
+            <svg class="w-4 h-4 text-complexity-low flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+            50 ideas per day
           </li>
           <li class="flex items-center gap-2">
-            <span class="text-complexity-low">&#10003;</span> Filter by source, complexity, confidence
+            <svg class="w-4 h-4 text-complexity-low flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+            All 8 sources
           </li>
           <li class="flex items-center gap-2">
-            <span class="text-complexity-low">&#10003;</span> View full idea briefs
+            <svg class="w-4 h-4 text-complexity-low flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+            AI analysis briefs
           </li>
           <li class="flex items-center gap-2">
-            <span class="text-border">&#10007;</span> Save & rate ideas
+            <svg class="w-4 h-4 text-complexity-low flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+            Save &amp; rate ideas
           </li>
-          <li class="flex items-center gap-2">
-            <span class="text-border">&#10007;</span> Email digest
+          <li class="flex items-center gap-2 text-text-secondary/50">
+            <svg class="w-4 h-4 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+            Daily email digest
           </li>
-          <li class="flex items-center gap-2">
-            <span class="text-border">&#10007;</span> API access
+          <li class="flex items-center gap-2 text-text-secondary/50">
+            <svg class="w-4 h-4 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+            Priority support
           </li>
         </ul>
+        <a
+          href="/"
+          class="block mt-6 text-center border border-white/20 hover:border-white/40 text-text-primary font-medium px-4 py-2 rounded-lg text-sm transition-colors"
+        >
+          Browse Ideas Free
+        </a>
       </div>
 
       <!-- Pro tier -->
-      <div class="border-2 border-accent rounded bg-surface p-5 relative">
-        <span class="absolute -top-2.5 left-4 bg-accent text-white text-[10px] font-bold px-2 py-0.5 rounded uppercase">
+      <div class="border-2 border-accent/50 rounded-xl bg-surface p-6 relative">
+        <span class="absolute -top-3 left-5 bg-accent text-white text-[11px] font-bold px-3 py-0.5 rounded-full uppercase tracking-wider">
           Pro
         </span>
-        <h2 class="font-bold text-text-primary">Pro</h2>
-        <p class="text-2xl font-bold text-text-primary mt-1">
-          $9<span class="text-sm font-normal text-text-secondary">/mo</span>
+        <h2 class="font-bold text-text-primary text-lg">Pro</h2>
+        <p class="text-3xl font-bold text-text-primary mt-2">
+          $12<span class="text-sm font-normal text-text-secondary">/mo</span>
         </p>
-        <p class="text-xs text-text-secondary mb-4">Cancel anytime</p>
-        <ul class="text-sm text-text-secondary space-y-2">
+        <p class="text-sm text-text-secondary mb-5">Cancel anytime</p>
+        <ul class="text-sm text-text-secondary space-y-3">
           <li class="flex items-center gap-2">
-            <span class="text-complexity-low">&#10003;</span> Everything in Free
+            <svg class="w-4 h-4 text-complexity-low flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+            1,000 ideas per day
           </li>
           <li class="flex items-center gap-2">
-            <span class="text-complexity-low">&#10003;</span> Save & rate unlimited ideas
+            <svg class="w-4 h-4 text-complexity-low flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+            All 8 sources
           </li>
           <li class="flex items-center gap-2">
-            <span class="text-complexity-low">&#10003;</span> Weekly email digest of top ideas
+            <svg class="w-4 h-4 text-complexity-low flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+            AI analysis briefs
           </li>
           <li class="flex items-center gap-2">
-            <span class="text-complexity-low">&#10003;</span> API access (1,000 req/day)
+            <svg class="w-4 h-4 text-complexity-low flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+            Save &amp; rate ideas
           </li>
           <li class="flex items-center gap-2">
-            <span class="text-complexity-low">&#10003;</span> Priority support
+            <svg class="w-4 h-4 text-accent flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+            <span class="text-text-primary">Daily email digest</span>
+          </li>
+          <li class="flex items-center gap-2">
+            <svg class="w-4 h-4 text-accent flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+            <span class="text-text-primary">Priority support</span>
           </li>
         </ul>
-        <div class="mt-4">
+        <div class="mt-6">
           <ProCheckout client:load />
         </div>
       </div>
     </div>
 
+    <!-- Comparison callout -->
+    <p class="text-sm text-text-secondary italic text-center">
+      IdeaBrowser charges $299&ndash;$999/year for fewer sources and no AI analysis. AIdeaPulse Pro is $144/year.
+    </p>
+
     <div class="pt-4 border-t border-border">
       <a href="/" class="text-accent hover:underline text-sm">
-        ← Browse ideas
+        &larr; Browse ideas
       </a>
     </div>
   </div>
