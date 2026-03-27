@@ -1,5 +1,6 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
+import ProCheckout from "../components/ProCheckout";
 ---
 
 <BaseLayout title="Go Pro — IdeaVault" description="Unlock saved ideas, ratings, email digests, and API access.">
@@ -67,12 +68,9 @@ import BaseLayout from "../layouts/BaseLayout.astro";
             <span class="text-complexity-low">&#10003;</span> Priority support
           </li>
         </ul>
-        <button
-          id="pro-cta"
-          class="mt-4 w-full bg-accent text-white py-2 rounded text-sm font-medium hover:opacity-90"
-        >
-          Coming soon
-        </button>
+        <div class="mt-4">
+          <ProCheckout client:load />
+        </div>
       </div>
     </div>
 

@@ -12,6 +12,9 @@ import { requireAuth } from "./middleware/auth";
 export interface Env {
   DB: D1Database;
   INGEST_WEBHOOK_SECRET: string;
+  STRIPE_SECRET_KEY: string;
+  STRIPE_WEBHOOK_SECRET: string;
+  STRIPE_PRICE_ID: string;
   ENVIRONMENT: string;
 }
 

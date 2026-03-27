@@ -5,8 +5,48 @@
 
 import { Hono } from "hono";
 import type { Env } from "../index";
+import { requireAuth } from "../middleware/auth";
 
 const stripeHandler = new Hono<{ Bindings: Env }>();
+
+/** POST /api/stripe/checkout — Create a Stripe Checkout Session for Pro subscription. */
+stripeHandler.post("/checkout", requireAuth(), async (c) => {
+  const stripeKey = c.env.STRIPE_SECRET_KEY;
+  const priceId = c.env.STRIPE_PRICE_ID;
+
+  if (!stripeKey || !priceId) {
+    return c.json({ error: "Stripe not configured" }, 500);
+  }
+
+  const userId = c.get("userId");
+  const origin = c.req.header("Origin") ?? "https://ideavault.dev";
+
+  const body = new URLSearchParams({
+    mode: "subscription",
+    "line_items[0][price]": priceId,
+    "line_items[0][quantity]": "1",
+    success_url: `${origin}/dashboard?checkout=success`,
+    cancel_url: `${origin}/pro?checkout=canceled`,
+    "metadata[clerk_user_id]": userId,
+  });
+
+  const res = await fetch("https://api.stripe.com/v1/checkout/sessions", {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${stripeKey}`,
+      "Content-Type": "application/x-www-form-urlencoded",
+    },
+    body: body.toString(),
+  });
+
+  if (!res.ok) {
+    const err = await res.json();
+    return c.json({ error: "Failed to create checkout session", detail: err }, 500);
+  }
+
+  const session: { url: string } = await res.json();
+  return c.json({ url: session.url });
+});
 
 /**
  * Verify Stripe webhook signature using Web Crypto API.
