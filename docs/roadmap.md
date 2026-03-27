@@ -45,5 +45,5 @@
 - [x] Subscription status endpoint + D1 tables
 - [x] Stripe product/price setup + checkout session creation
 - [x] Wire Pro CTA button to Stripe Checkout
-- [ ] Domain + DNS setup
+- [x] Domain + DNS setup (aideapulse.com live, api.aideapulse.com, CORS locked)
 - [ ] Launch (Product Hunt, Reddit, HN)

@@ -4,6 +4,13 @@ All notable changes to AIdeaPulse will be documented in this file.
 
 ## [Unreleased]
 
+### 2026-03-27 — 0b1dd3e: Domain + DNS setup, API URL update
+- feat: API base URL updated to https://api.aideapulse.com/api
+- feat: CORS locked to aideapulse.com, www.aideapulse.com, aideapulse-site.pages.dev
+- deploy: Cloudflare Pages project "aideapulse-site" created and deployed
+- deploy: Custom domains live — aideapulse.com (frontend), api.aideapulse.com (Workers API)
+- verify: 60 ideas in production, health check passing
+
 ### 2026-03-27 — bc1a701: Stripe checkout session + Pro CTA button
 - feat: POST /api/stripe/checkout creates Stripe Checkout Session (subscription mode)
 - feat: ProCheckout React island replaces static CTA — Clerk auth, redirect to Stripe hosted checkout
