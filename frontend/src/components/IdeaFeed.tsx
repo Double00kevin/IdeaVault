@@ -17,7 +17,6 @@ interface Idea {
   confidence_score?: number;
   source_links?: string[];
   source_type?: string;
-  category?: string;
   created_at: string;
   fit_score?: number;
   fit_reason?: string;

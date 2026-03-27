@@ -31,9 +31,10 @@ describe("stripIdeaFields", () => {
     expect(stripped).toEqual({
       id: "idea-001",
       title: "AI Pet Therapist",
-      category: "reddit",
+      source_type: "reddit",
       confidence_score: 78,
       created_at: "2026-03-27T12:00:00Z",
+      build_complexity: "medium",
     });
   });
 
@@ -42,6 +43,8 @@ describe("stripIdeaFields", () => {
     const stripped = stripIdeaFields(idea);
     const keys = Object.keys(stripped);
 
+    expect(keys).toContain("source_type");
+    expect(keys).toContain("build_complexity");
     expect(keys).not.toContain("one_liner");
     expect(keys).not.toContain("problem_statement");
     expect(keys).not.toContain("target_audience");
@@ -49,6 +52,7 @@ describe("stripIdeaFields", () => {
     expect(keys).not.toContain("competitors");
     expect(keys).not.toContain("monetization_angle");
     expect(keys).not.toContain("source_links");
+    expect(keys).not.toContain("build_timeline");
   });
 });
 
@@ -60,9 +64,10 @@ describe("teaserIdeaFields", () => {
     expect(teaser).toEqual({
       id: "idea-001",
       title: "AI Pet Therapist",
-      category: "reddit",
+      source_type: "reddit",
       confidence_score: 78,
       created_at: "2026-03-27T12:00:00Z",
+      build_complexity: "medium",
       one_liner: "Use LLMs to diagnose pet behavioral issues",
     });
   });

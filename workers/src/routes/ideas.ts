@@ -51,9 +51,10 @@ export function stripIdeaFields(idea: ReturnType<typeof formatIdea>) {
   return {
     id: idea.id,
     title: idea.title,
-    category: idea.source_type,
+    source_type: idea.source_type,
     confidence_score: idea.confidence_score,
     created_at: idea.created_at,
+    build_complexity: idea.build_complexity,
   };
 }
 

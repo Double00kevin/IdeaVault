@@ -16,7 +16,6 @@ interface Idea {
   confidence_score?: number;
   source_links?: string[];
   source_type?: string;
-  category?: string;
   created_at: string;
 }
 
@@ -53,7 +52,7 @@ export default function IdeaCard({
 }: Props) {
   const [expanded, setExpanded] = useState(false);
   const [claiming, setClaiming] = useState(false);
-  const sourceType = idea.source_type ?? idea.category ?? "";
+  const sourceType = idea.source_type ?? "";
   const complexity = idea.build_complexity
     ? complexityConfig[idea.build_complexity] ?? complexityConfig.medium
     : null;

@@ -5,7 +5,7 @@ interface GatedIdea {
   id: string;
   title: string;
   one_liner?: string;
-  category?: string;
+  source_type?: string;
   confidence_score?: number;
   created_at: string;
   gated: boolean;
@@ -83,9 +83,9 @@ export default function IdeaDetailGated({ idea }: { idea: GatedIdea }) {
         <p className="text-gray-400 leading-relaxed mb-6">{idea.one_liner}</p>
       )}
 
-      {idea.category && (
+      {idea.source_type && (
         <span className="text-[10px] font-mono text-gray-500 uppercase tracking-wide">
-          {idea.category}
+          {idea.source_type}
         </span>
       )}
 
