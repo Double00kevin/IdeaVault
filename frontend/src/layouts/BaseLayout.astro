@@ -5,9 +5,15 @@ interface Props {
   title: string;
   description?: string;
   ogImage?: string;
+  fullWidth?: boolean;
 }
 
-const { title, description = "AI-analyzed startup ideas, daily.", ogImage } = Astro.props;
+const {
+  title,
+  description = "AI-analyzed startup ideas, daily.",
+  ogImage,
+  fullWidth = false,
+} = Astro.props;
 const canonicalURL = new URL(Astro.url.pathname, Astro.site ?? "https://aideapulse.com");
 ---
 
@@ -17,6 +23,9 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site ?? "https://aideapul
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
     <title>{title}</title>
     <meta name="description" content={description} />
     <link rel="canonical" href={canonicalURL} />
@@ -37,28 +46,46 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site ?? "https://aideapul
   <body>
     <a href="#main" class="skip-link">Skip to content</a>
 
-    <header class="border-b border-border bg-surface">
-      <nav class="max-w-content mx-auto px-4 py-3 flex items-center justify-between">
-        <a href="/" class="font-bold text-text-primary text-lg tracking-tight">
+    <header class="fixed top-0 left-0 right-0 z-50 bg-bg/80 backdrop-blur-md border-b border-white/5">
+      <nav class="max-w-landing mx-auto px-6 py-4 flex items-center justify-between">
+        <a href="/" class="font-bold text-text-primary text-lg tracking-tight flex items-center gap-2">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" class="text-accent">
+            <circle cx="12" cy="12" r="3" fill="currentColor" opacity="0.9"/>
+            <circle cx="12" cy="12" r="7" stroke="currentColor" stroke-width="1.5" opacity="0.5"/>
+            <circle cx="12" cy="12" r="11" stroke="currentColor" stroke-width="1" opacity="0.2"/>
+          </svg>
           AIdeaPulse
         </a>
-        <div class="flex items-center gap-4 text-sm text-text-secondary">
-          <a href="/" class="hover:text-text-primary">Browse</a>
-          <a href="/about" class="hover:text-text-primary">About</a>
-          <a href="/pro" class="text-accent hover:underline">Pro</a>
+        <div class="hidden sm:flex items-center gap-8 text-sm text-text-secondary">
+          <a href="/#features" class="hover:text-text-primary transition-colors">Features</a>
+          <a href="/#pricing" class="hover:text-text-primary transition-colors">Pricing</a>
+          <a href="/about" class="hover:text-text-primary transition-colors">About</a>
+        </div>
+        <div class="flex items-center gap-3">
           <HeaderAuth client:load />
         </div>
       </nav>
     </header>
 
-    <main id="main" class="max-w-content mx-auto px-4 py-6">
-      <slot />
-    </main>
+    <!-- Spacer for fixed nav -->
+    <div class="h-16"></div>
 
-    <footer class="border-t border-border mt-12 py-6">
-      <div class="max-w-content mx-auto px-4 text-xs text-text-secondary">
-        AIdeaPulse. AI-analyzed startup ideas, daily.
-      </div>
-    </footer>
+    {fullWidth ? (
+      <main id="main">
+        <slot />
+      </main>
+    ) : (
+      <main id="main" class="max-w-content mx-auto px-4 py-6">
+        <slot />
+      </main>
+    )}
+
+    {!fullWidth && (
+      <footer class="border-t border-border mt-12 py-6">
+        <div class="max-w-content mx-auto px-4 text-xs text-text-secondary">
+          &copy; 2026 AIdeaPulse. AI-analyzed startup ideas, daily.
+        </div>
+      </footer>
+    )}
   </body>
 </html>

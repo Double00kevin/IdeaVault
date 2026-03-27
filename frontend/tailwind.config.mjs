@@ -4,18 +4,20 @@ export default {
   theme: {
     extend: {
       colors: {
-        surface: "#ffffff",
-        bg: "#fafafa",
-        "text-primary": "#1a1a1a",
-        "text-secondary": "#666666",
-        border: "#e5e5e5",
-        accent: "#2563eb",
+        surface: "#111118",
+        bg: "#0a0a0f",
+        "text-primary": "#f0f0f5",
+        "text-secondary": "#8a8a9a",
+        border: "#1e1e2e",
+        accent: "#06b6d4",
+        "accent-hover": "#22d3ee",
         "complexity-low": "#16a34a",
         "complexity-med": "#d97706",
         "complexity-high": "#dc2626",
       },
       fontFamily: {
         sans: [
+          "Inter",
           "-apple-system",
           "BlinkMacSystemFont",
           "Segoe UI",
@@ -25,6 +27,7 @@ export default {
       },
       maxWidth: {
         content: "720px",
+        landing: "1120px",
       },
     },
   },

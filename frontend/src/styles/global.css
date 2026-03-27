@@ -17,4 +17,9 @@
   .skip-link:focus {
     @apply top-0;
   }
+
+  /* Smooth scroll for anchor links */
+  html {
+    scroll-behavior: smooth;
+  }
 }

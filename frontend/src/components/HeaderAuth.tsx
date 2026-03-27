@@ -16,7 +16,7 @@ function AuthButtons() {
   if (isSignedIn) {
     return (
       <div className="flex items-center gap-3">
-        <a href="/dashboard" className="hover:text-text-primary">
+        <a href="/dashboard" className="text-sm text-text-secondary hover:text-text-primary transition-colors">
           Dashboard
         </a>
         <UserButton
@@ -33,13 +33,13 @@ function AuthButtons() {
   return (
     <div className="flex items-center gap-3">
       <SignInButton mode="modal">
-        <button className="hover:text-text-primary cursor-pointer">
+        <button className="text-sm text-text-secondary hover:text-text-primary cursor-pointer transition-colors">
           Sign in
         </button>
       </SignInButton>
       <SignUpButton mode="modal">
-        <button className="bg-accent text-white px-3 py-1 rounded text-xs font-medium hover:opacity-90 cursor-pointer">
-          Sign up
+        <button className="bg-accent hover:bg-accent-hover text-white px-4 py-1.5 rounded-md text-sm font-medium cursor-pointer transition-colors">
+          Get Started Free
         </button>
       </SignUpButton>
     </div>
