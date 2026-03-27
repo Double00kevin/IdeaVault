@@ -22,7 +22,7 @@ const app = new Hono<{ Bindings: Env }>();
 
 // CORS for frontend
 app.use("/api/*", cors({
-  origin: "*", // Tighten after deploy
+  origin: ["https://aideapulse.com", "https://www.aideapulse.com", "https://aideapulse-site.pages.dev"],
   allowMethods: ["GET", "POST", "DELETE"],
   allowHeaders: ["Content-Type", "Authorization"],
 }));
