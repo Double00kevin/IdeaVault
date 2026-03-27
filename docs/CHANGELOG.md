@@ -4,10 +4,10 @@ All notable changes to AIdeaPulse will be documented in this file.
 
 ## [Unreleased]
 
-### 2026-03-27 — 2f594fe: Content gating — three-tier visibility (ADR-004)
+### 2026-03-27 — 469ec31: Content gating — three-tier visibility (ADR-004)
 - feat: D1 migration — daily_free_claims table (user_id + claimed_date PK, idea_id, index)
 - feat: server-side tier detection (anon/free/pro) via optionalAuth middleware on ideas endpoints
-- feat: stripIdeaFields() — anon/free list view returns only id, title, category, confidence_score, created_at
+- feat: stripIdeaFields() — anon/free list view returns only id, title, source_type, confidence_score, created_at, build_complexity
 - feat: teaserIdeaFields() — gated detail view adds one_liner for teaser
 - feat: GET /api/ideas returns `tier` field + `daily_free_idea_id` for free users; Pro gets full data, free gets stripped (except daily claim), anon gets stripped
 - feat: GET /api/ideas/:id — Pro full access, free first-click daily claim (auto-insert), anon teaser + signup_required
@@ -17,6 +17,7 @@ All notable changes to AIdeaPulse will be documented in this file.
 - feat: IdeaDetailGated component — client-side re-fetch with auth for detail pages, teaser + CTA fallback
 - feat: ideas/[id].astro SSR renders anon teaser for SEO/social sharing, hydrates with auth client-side
 - feat: 11 vitest unit tests — stripIdeaFields, teaserIdeaFields, getClaimDate (06:00 UTC boundary, month/year edges)
+- fix: stripIdeaFields corrected to return source_type + build_complexity (was returning category, missing complexity)
 - note: D1 migration 0006 pending deploy — run `npx wrangler d1 migrations apply ideavault --remote`
 
 ### 2026-03-27 — ea50e31: Smart Match — personalized idea scoring for Pro users
