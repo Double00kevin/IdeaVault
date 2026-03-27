@@ -1,34 +1,36 @@
 # IdeaVault Roadmap
 
-## Sprint 1 — Foundation (current)
+## Sprint 1 — Foundation (done)
 - [x] Project scaffold and repo structure
-- [ ] Product discovery (/office-hours)
-- [ ] Architecture review (/plan-eng-review)
-- [ ] Pipeline skeleton with scraper/analysis/push stubs
-- [ ] Git init + initial commit
+- [x] Product discovery (/office-hours)
+- [x] Architecture review (/plan-eng-review)
+- [x] Design review (/plan-design-review)
+- [x] Pipeline skeleton with scraper/analysis/push stubs
+- [x] Git init + initial commit
 
-## Sprint 2 — Core Pipeline + API + Basic Frontend
-- [ ] Reddit scraper (PRAW)
-- [ ] Google Trends scraper (pytrends)
-- [ ] Product Hunt scraper
-- [ ] Claude API analysis module
+## Sprint 2 — Core Pipeline + API + Frontend (current)
+- [ ] Reddit scraper (PRAW) + domain-specific subreddits
+- [ ] Google Trends scraper (pytrends, optional enrichment)
+- [ ] Product Hunt scraper (GraphQL API, date-filtered)
+- [ ] Pre-filter top 30 signals by engagement
+- [ ] Claude API analysis module (JSON parsing, confidence rubric)
 - [ ] D1 schema + migrations
-- [ ] Workers API endpoints (list, get, filter ideas)
-- [ ] KITT->CF ingest webhook with bearer auth
-- [ ] Basic React frontend (browse ideas)
-- [ ] systemd timer for cron scheduling
+- [ ] Workers API with Hono (ingest webhook HMAC, list, get, health)
+- [ ] Dedup in Workers (UNIQUE + fuzzy word-set)
+- [ ] Astro + React islands frontend (idea feed, cards, filters)
+- [ ] OG image generation per idea
+- [ ] systemd timer for daily pipeline run
 
 ## Sprint 3 — Auth + Polish
-- [ ] User auth (JWT or Clerk)
+- [ ] User auth (Clerk recommended)
 - [ ] Save/rate ideas
 - [ ] User dashboard
 - [ ] Email digest (Pro tier)
-- [ ] UI polish + responsive design
+- [ ] Two-stage Claude analysis (classify then analyze)
 
 ## Sprint 4 — Monetization + Launch
-- [ ] Stripe integration (free/pro/API tiers)
-- [ ] API key management for API tier
+- [ ] Stripe integration (free/pro tiers)
 - [ ] Rate limiting per tier
-- [ ] Landing page
+- [ ] About page, Pro upgrade page, favicon, 404
 - [ ] Domain + DNS setup
 - [ ] Launch (Product Hunt, Reddit, HN)

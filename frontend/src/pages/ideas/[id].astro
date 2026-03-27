@@ -1,0 +1,54 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import IdeaCard from "../../components/IdeaCard";
+
+const { id } = Astro.params;
+const API_BASE = import.meta.env.PUBLIC_API_URL ?? "http://localhost:8787/api";
+
+let idea = null;
+let error = null;
+
+try {
+  const res = await fetch(`${API_BASE}/ideas/${id}`);
+  if (res.ok) {
+    idea = await res.json();
+  } else if (res.status === 404) {
+    return Astro.redirect("/404");
+  } else {
+    error = `API error: ${res.status}`;
+  }
+} catch (e) {
+  error = "Failed to fetch idea";
+}
+---
+
+{idea ? (
+  <BaseLayout
+    title={`${idea.title} — IdeaVault`}
+    description={idea.one_liner}
+  >
+    <div class="mb-4">
+      <a href="/" class="text-xs text-accent hover:underline">
+        ← Browse all ideas
+      </a>
+    </div>
+
+    <IdeaCard idea={idea} client:load />
+
+    <div class="mt-8 text-center">
+      <a href="/" class="text-sm text-accent hover:underline">
+        Browse more ideas →
+      </a>
+    </div>
+  </BaseLayout>
+) : (
+  <BaseLayout title="Error — IdeaVault">
+    <div class="border border-border rounded bg-surface p-8 text-center">
+      <p class="text-text-primary font-bold mb-1">Something went wrong.</p>
+      <p class="text-text-secondary text-sm">{error}</p>
+      <a href="/" class="text-accent hover:underline text-sm mt-3 inline-block">
+        Browse all ideas →
+      </a>
+    </div>
+  </BaseLayout>
+)}

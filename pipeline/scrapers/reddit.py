@@ -1,18 +1,33 @@
-"""Reddit scraper using PRAW. Pulls demand signals from startup/SaaS subreddits."""
+"""Reddit scraper using PRAW. Pulls demand signals from startup/SaaS + domain subreddits."""
 
+import logging
 from dataclasses import dataclass
 
 import praw
 
 from pipeline.config import RedditConfig
 
-TARGET_SUBREDDITS = [
+logger = logging.getLogger("ideavault.scrapers.reddit")
+
+# Builder-focused subreddits (idea discovery)
+BUILDER_SUBREDDITS = [
     "SaaS",
     "startups",
     "Entrepreneur",
     "smallbusiness",
     "SideProject",
 ]
+
+# Domain-specific subreddits (user pain points = higher quality signals)
+DOMAIN_SUBREDDITS = [
+    "webdev",
+    "freelance",
+    "accounting",
+    "realestate",
+    "teachers",
+]
+
+TARGET_SUBREDDITS = BUILDER_SUBREDDITS + DOMAIN_SUBREDDITS
 
 
 @dataclass
@@ -44,23 +59,28 @@ def scrape_subreddit(
     time_filter: str = "week",
 ) -> list[RedditSignal]:
     """Scrape top posts from a subreddit for demand signals."""
-    subreddit = client.subreddit(subreddit_name)
-    signals: list[RedditSignal] = []
+    try:
+        subreddit = client.subreddit(subreddit_name)
+        signals: list[RedditSignal] = []
 
-    for post in subreddit.top(time_filter=time_filter, limit=limit):
-        signals.append(
-            RedditSignal(
-                subreddit=subreddit_name,
-                title=post.title,
-                selftext=post.selftext[:2000],  # truncate long posts
-                score=post.score,
-                num_comments=post.num_comments,
-                url=f"https://reddit.com{post.permalink}",
-                created_utc=post.created_utc,
+        for post in subreddit.top(time_filter=time_filter, limit=limit):
+            signals.append(
+                RedditSignal(
+                    subreddit=subreddit_name,
+                    title=post.title,
+                    selftext=post.selftext[:2000],
+                    score=post.score,
+                    num_comments=post.num_comments,
+                    url=f"https://reddit.com{post.permalink}",
+                    created_utc=post.created_utc,
+                )
             )
-        )
 
-    return signals
+        logger.info("Scraped %d posts from r/%s", len(signals), subreddit_name)
+        return signals
+    except Exception as e:
+        logger.error("Failed to scrape r/%s: %s", subreddit_name, e)
+        return []
 
 
 def scrape_all(config: RedditConfig, limit: int = 50) -> list[RedditSignal]:
@@ -72,4 +92,5 @@ def scrape_all(config: RedditConfig, limit: int = 50) -> list[RedditSignal]:
         signals = scrape_subreddit(client, sub, limit=limit)
         all_signals.extend(signals)
 
+    logger.info("Total Reddit signals: %d", len(all_signals))
     return all_signals

@@ -5,7 +5,7 @@
 IdeaVault is an AI-powered startup idea discovery SaaS platform. It scrapes demand signals from Reddit, Google Trends, and Product Hunt, analyzes them via Claude API, and serves structured idea briefs through a web app with free/pro/API monetization tiers.
 
 - **Last updated:** 2026-03-26
-- **Status:** Sprint 1 — Foundation
+- **Status:** Sprint 2 — Core Pipeline + API + Frontend
 
 ## Architecture
 
@@ -15,7 +15,7 @@ IdeaVault is an AI-powered startup idea discovery SaaS platform. It scrapes dema
 | AI analysis        | Claude API (Anthropic SDK)        | KITT       |
 | API/backend        | Cloudflare Workers (TypeScript)   | Cloudflare |
 | Database           | Cloudflare D1 (SQLite)            | Cloudflare |
-| Frontend           | React + Vite + Tailwind           | CF Pages   |
+| Frontend           | Astro + React islands + Tailwind  | CF Pages   |
 | Object storage     | Cloudflare R2                     | Cloudflare |
 | Auth               | JWT (custom) or Clerk             | CF Workers |
 | Payments           | Stripe                            | CF Workers |

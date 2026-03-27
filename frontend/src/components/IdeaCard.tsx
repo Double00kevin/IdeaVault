@@ -1,0 +1,183 @@
+import { useState } from "react";
+
+interface Idea {
+  id: string;
+  title: string;
+  one_liner: string;
+  problem_statement: string;
+  target_audience: string;
+  market_size: { tam?: string; sam?: string; som?: string };
+  competitors: string[];
+  competitor_count: number;
+  build_complexity: "low" | "medium" | "high";
+  build_timeline: string;
+  monetization_angle: string;
+  confidence_score: number;
+  source_links: string[];
+  source_type: string;
+  created_at: string;
+}
+
+const complexityConfig = {
+  low: { color: "bg-complexity-low", label: "Low" },
+  medium: { color: "bg-complexity-med", label: "Med" },
+  high: { color: "bg-complexity-high", label: "High" },
+};
+
+export default function IdeaCard({ idea }: { idea: Idea }) {
+  const [expanded, setExpanded] = useState(false);
+  const complexity = complexityConfig[idea.build_complexity] ?? complexityConfig.medium;
+
+  return (
+    <article
+      className="border border-border rounded bg-surface p-4"
+      aria-label={`Idea: ${idea.title}`}
+    >
+      {/* Headline row */}
+      <div className="flex items-start gap-3">
+        <div className="flex-1 min-w-0">
+          <div className="flex items-center gap-2 mb-1">
+            <span
+              className={`inline-block w-2 h-2 rounded-full ${complexity.color} flex-shrink-0`}
+              aria-hidden="true"
+            />
+            <span className="text-[11px] font-mono text-text-secondary uppercase tracking-wide">
+              {complexity.label}
+            </span>
+            <a
+              href={`/ideas/${idea.id}`}
+              className="font-bold text-text-primary leading-tight hover:underline truncate"
+            >
+              {idea.title}
+            </a>
+          </div>
+          <p className="text-sm text-text-secondary leading-snug">
+            {idea.one_liner}
+          </p>
+        </div>
+      </div>
+
+      {/* Scan row: confidence, competitors, monetization hint */}
+      <div className="flex items-center gap-4 mt-3 text-xs">
+        <span
+          className="font-mono font-bold text-text-primary"
+          aria-label={`Confidence score: ${idea.confidence_score} out of 100`}
+        >
+          {idea.confidence_score}
+        </span>
+        <span className="text-text-secondary">
+          {idea.competitor_count} competitor{idea.competitor_count !== 1 ? "s" : ""}
+        </span>
+        {idea.monetization_angle && (
+          <span className="text-text-secondary truncate max-w-[200px]">
+            {idea.monetization_angle}
+          </span>
+        )}
+        <span className="text-text-secondary text-[10px] font-mono uppercase">
+          {idea.source_type}
+        </span>
+
+        <button
+          onClick={() => setExpanded(!expanded)}
+          className="ml-auto text-text-secondary hover:text-text-primary text-xs flex items-center gap-1"
+          aria-expanded={expanded}
+          aria-controls={`detail-${idea.id}`}
+        >
+          {expanded ? "Less" : "More"}
+          <svg
+            className={`w-3 h-3 transition-transform ${expanded ? "rotate-180" : ""}`}
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+            strokeWidth={2}
+          >
+            <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
+          </svg>
+        </button>
+      </div>
+
+      {/* Expandable detail section */}
+      {expanded && (
+        <div
+          id={`detail-${idea.id}`}
+          className="mt-4 pt-4 border-t border-border text-sm space-y-3"
+        >
+          {idea.problem_statement && (
+            <div>
+              <span className="text-[11px] font-mono text-text-secondary uppercase tracking-wide">
+                Problem
+              </span>
+              <p className="text-text-primary mt-0.5">{idea.problem_statement}</p>
+            </div>
+          )}
+
+          {idea.target_audience && (
+            <div>
+              <span className="text-[11px] font-mono text-text-secondary uppercase tracking-wide">
+                Target
+              </span>
+              <p className="text-text-primary mt-0.5">{idea.target_audience}</p>
+            </div>
+          )}
+
+          <div className="grid grid-cols-3 gap-3">
+            {idea.market_size.tam && (
+              <div>
+                <span className="text-[11px] font-mono text-text-secondary">TAM</span>
+                <p className="font-mono text-xs">{idea.market_size.tam}</p>
+              </div>
+            )}
+            {idea.market_size.sam && (
+              <div>
+                <span className="text-[11px] font-mono text-text-secondary">SAM</span>
+                <p className="font-mono text-xs">{idea.market_size.sam}</p>
+              </div>
+            )}
+            {idea.market_size.som && (
+              <div>
+                <span className="text-[11px] font-mono text-text-secondary">SOM</span>
+                <p className="font-mono text-xs">{idea.market_size.som}</p>
+              </div>
+            )}
+          </div>
+
+          {idea.competitors.length > 0 && (
+            <div>
+              <span className="text-[11px] font-mono text-text-secondary uppercase tracking-wide">
+                Competitors
+              </span>
+              <p className="text-text-primary mt-0.5">
+                {idea.competitors.join(", ")}
+              </p>
+            </div>
+          )}
+
+          {idea.build_timeline && (
+            <div>
+              <span className="text-[11px] font-mono text-text-secondary uppercase tracking-wide">
+                Timeline
+              </span>
+              <p className="text-text-primary mt-0.5">{idea.build_timeline}</p>
+            </div>
+          )}
+
+          {idea.source_links.length > 0 && (
+            <div className="flex gap-2 flex-wrap">
+              {idea.source_links.map((link, i) => (
+                <a
+                  key={i}
+                  href={link}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-xs text-accent hover:underline"
+                >
+                  Source {i + 1}
+                </a>
+              ))}
+            </div>
+          )}
+        </div>
+      )}
+    </article>
+  );
+}

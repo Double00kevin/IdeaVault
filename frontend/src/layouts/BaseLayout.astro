@@ -1,0 +1,64 @@
+---
+interface Props {
+  title: string;
+  description?: string;
+  ogImage?: string;
+}
+
+const { title, description = "AI-analyzed startup ideas, daily.", ogImage } = Astro.props;
+const canonicalURL = new URL(Astro.url.pathname, Astro.site ?? "https://ideavault.dev");
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonicalURL} />
+
+    <!-- Open Graph -->
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content={canonicalURL} />
+    {ogImage && <meta property="og:image" content={ogImage} />}
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    {ogImage && <meta name="twitter:image" content={ogImage} />}
+  </head>
+  <body>
+    <a href="#main" class="skip-link">Skip to content</a>
+
+    <header class="border-b border-border bg-surface">
+      <nav class="max-w-content mx-auto px-4 py-3 flex items-center justify-between">
+        <a href="/" class="font-bold text-text-primary text-lg tracking-tight">
+          IdeaVault
+        </a>
+        <div class="flex items-center gap-4 text-sm text-text-secondary">
+          <a href="/" class="hover:text-text-primary">Browse</a>
+          <a
+            href="#pro"
+            class="text-accent hover:underline"
+          >
+            Go Pro
+          </a>
+        </div>
+      </nav>
+    </header>
+
+    <main id="main" class="max-w-content mx-auto px-4 py-6">
+      <slot />
+    </main>
+
+    <footer class="border-t border-border mt-12 py-6">
+      <div class="max-w-content mx-auto px-4 text-xs text-text-secondary">
+        IdeaVault. AI-analyzed startup ideas, daily.
+      </div>
+    </footer>
+  </body>
+</html>

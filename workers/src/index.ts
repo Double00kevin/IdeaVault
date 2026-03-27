@@ -1,0 +1,29 @@
+import { Hono } from "hono";
+import { cors } from "hono/cors";
+import { ingestHandler } from "./routes/ingest";
+import { ideasHandler } from "./routes/ideas";
+import { healthHandler } from "./routes/health";
+
+export interface Env {
+  DB: D1Database;
+  INGEST_WEBHOOK_SECRET: string;
+  ENVIRONMENT: string;
+}
+
+const app = new Hono<{ Bindings: Env }>();
+
+// CORS for frontend
+app.use("/api/*", cors({
+  origin: "*", // Tighten after deploy
+  allowMethods: ["GET", "POST"],
+}));
+
+// Routes
+app.route("/api/ingest", ingestHandler);
+app.route("/api/ideas", ideasHandler);
+app.route("/api/health", healthHandler);
+
+// Catch-all 404
+app.all("*", (c) => c.json({ error: "Not found" }, 404));
+
+export default app;
