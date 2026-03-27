@@ -1,4 +1,5 @@
 import { useState } from "react";
+import SaveButton from "./SaveButton";
 
 interface Idea {
   id: string;
@@ -24,7 +25,13 @@ const complexityConfig = {
   high: { color: "bg-complexity-high", label: "High" },
 };
 
-export default function IdeaCard({ idea }: { idea: Idea }) {
+interface Props {
+  idea: Idea;
+  saved?: boolean;
+  rating?: number | null;
+}
+
+export default function IdeaCard({ idea, saved = false, rating = null }: Props) {
   const [expanded, setExpanded] = useState(false);
   const complexity = complexityConfig[idea.build_complexity] ?? complexityConfig.medium;
 
@@ -76,6 +83,8 @@ export default function IdeaCard({ idea }: { idea: Idea }) {
         <span className="text-text-secondary text-[10px] font-mono uppercase">
           {idea.source_type}
         </span>
+
+        <SaveButton ideaId={idea.id} initialSaved={saved} initialRating={rating} />
 
         <button
           onClick={() => setExpanded(!expanded)}

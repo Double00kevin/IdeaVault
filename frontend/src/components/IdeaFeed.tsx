@@ -1,4 +1,6 @@
 import { useState, useEffect } from "react";
+import { useAuth } from "@clerk/clerk-react";
+import AuthProvider from "./AuthProvider";
 import IdeaCard from "./IdeaCard";
 
 interface Idea {
@@ -25,20 +27,53 @@ interface FeedResponse {
   has_more: boolean;
 }
 
+interface SavedEntry {
+  idea_id: string;
+  rating: number | null;
+}
+
 const API_BASE = import.meta.env.PUBLIC_API_URL ?? "/api";
 
-export default function IdeaFeed() {
+function IdeaFeedInner() {
+  const { isSignedIn, getToken } = useAuth();
   const [ideas, setIdeas] = useState<Idea[]>([]);
   const [loading, setLoading] = useState(true);
   const [loadingMore, setLoadingMore] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [cursor, setCursor] = useState<string | null>(null);
   const [hasMore, setHasMore] = useState(false);
+  const [savedMap, setSavedMap] = useState<Map<string, number | null>>(new Map());
 
   // Filters
   const [complexity, setComplexity] = useState<string>("");
   const [source, setSource] = useState<string>("");
   const [sort, setSort] = useState<string>("recent");
+
+  // Fetch user's saved ideas
+  useEffect(() => {
+    if (!isSignedIn) {
+      setSavedMap(new Map());
+      return;
+    }
+    (async () => {
+      try {
+        const token = await getToken();
+        const res = await fetch(`${API_BASE}/saved`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        if (res.ok) {
+          const data: { saved: SavedEntry[] } = await res.json();
+          const map = new Map<string, number | null>();
+          for (const entry of data.saved) {
+            map.set(entry.idea_id, entry.rating);
+          }
+          setSavedMap(map);
+        }
+      } catch {
+        // Non-critical — feed still works without saved state
+      }
+    })();
+  }, [isSignedIn]);
 
   async function fetchIdeas(append = false) {
     if (append) setLoadingMore(true);
@@ -112,8 +147,8 @@ export default function IdeaFeed() {
       <div className="border border-border rounded bg-surface p-8 text-center">
         <p className="text-text-primary font-bold mb-1">Fresh ideas brewing.</p>
         <p className="text-text-secondary text-sm">
-          IdeaVault analyzes startup signals from Reddit, Product Hunt, and Google
-          Trends daily. Check back tomorrow for new AI-analyzed ideas.
+          IdeaVault analyzes startup signals from 8 sources daily.
+          Check back tomorrow for new AI-analyzed ideas.
         </p>
       </div>
     );
@@ -183,7 +218,12 @@ export default function IdeaFeed() {
       {/* Ideas list */}
       <div className="space-y-3">
         {ideas.map((idea) => (
-          <IdeaCard key={idea.id} idea={idea} />
+          <IdeaCard
+            key={idea.id}
+            idea={idea}
+            saved={savedMap.has(idea.id)}
+            rating={savedMap.get(idea.id) ?? null}
+          />
         ))}
       </div>
 
@@ -212,5 +252,13 @@ export default function IdeaFeed() {
         </p>
       )}
     </div>
+  );
+}
+
+export default function IdeaFeed() {
+  return (
+    <AuthProvider>
+      <IdeaFeedInner />
+    </AuthProvider>
   );
 }
