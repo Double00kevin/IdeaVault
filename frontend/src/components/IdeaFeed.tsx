@@ -5,27 +5,32 @@ import ProfileSetup from "./ProfileSetup";
 interface Idea {
   id: string;
   title: string;
-  one_liner: string;
-  problem_statement: string;
-  target_audience: string;
-  market_size: { tam?: string; sam?: string; som?: string };
-  competitors: string[];
-  competitor_count: number;
-  build_complexity: "low" | "medium" | "high";
-  build_timeline: string;
-  monetization_angle: string;
-  confidence_score: number;
-  source_links: string[];
-  source_type: string;
+  one_liner?: string;
+  problem_statement?: string;
+  target_audience?: string;
+  market_size?: { tam?: string; sam?: string; som?: string };
+  competitors?: string[];
+  competitor_count?: number;
+  build_complexity?: "low" | "medium" | "high";
+  build_timeline?: string;
+  monetization_angle?: string;
+  confidence_score?: number;
+  source_links?: string[];
+  source_type?: string;
+  category?: string;
   created_at: string;
   fit_score?: number;
   fit_reason?: string;
 }
 
+type Tier = "anon" | "free" | "pro";
+
 interface FeedResponse {
   ideas: Idea[];
   next_cursor: string | null;
   has_more: boolean;
+  tier?: Tier;
+  daily_free_idea_id?: string | null;
 }
 
 interface SavedEntry {
@@ -55,6 +60,10 @@ export default function IdeaFeed() {
   const [cursor, setCursor] = useState<string | null>(null);
   const [hasMore, setHasMore] = useState(false);
   const [savedMap, setSavedMap] = useState<Map<string, number | null>>(new Map());
+
+  // Tier state
+  const [tier, setTier] = useState<Tier>("anon");
+  const [dailyFreeIdeaId, setDailyFreeIdeaId] = useState<string | null>(null);
 
   // Filters
   const [complexity, setComplexity] = useState<string>("");
@@ -121,11 +130,10 @@ export default function IdeaFeed() {
       if (sort) params.set("sort", sort);
       if (smartMatch) params.set("smart_match", "true");
 
+      // Always send auth header if signed in — this is how the API detects tier
       const fetchHeaders: Record<string, string> = {};
-      if (smartMatch) {
-        const token = await getClerkToken();
-        if (token) fetchHeaders["Authorization"] = `Bearer ${token}`;
-      }
+      const token = await getClerkToken();
+      if (token) fetchHeaders["Authorization"] = `Bearer ${token}`;
 
       const res = await fetch(`${API_BASE}/ideas?${params}`, {
         headers: fetchHeaders,
@@ -136,6 +144,12 @@ export default function IdeaFeed() {
       setIdeas(append ? [...ideas, ...data.ideas] : data.ideas);
       setCursor(data.next_cursor);
       setHasMore(data.has_more);
+
+      // Update tier state from API response
+      if (data.tier) setTier(data.tier);
+      if (data.daily_free_idea_id !== undefined) {
+        setDailyFreeIdeaId(data.daily_free_idea_id);
+      }
     } catch (e) {
       setError(e instanceof Error ? e.message : "Something went wrong");
     } finally {
@@ -155,6 +169,22 @@ export default function IdeaFeed() {
     } else {
       setShowProfile(true);
     }
+  }
+
+  /** Called when a free user claims their daily idea via the detail endpoint. */
+  function handleClaim(ideaId: string) {
+    setDailyFreeIdeaId(ideaId);
+    // Re-fetch to get full data for the claimed idea
+    fetchIdeas(false);
+  }
+
+  /** Determine if an idea should be gated based on tier and daily claim. */
+  function isGated(ideaId: string): boolean {
+    if (tier === "pro") return false;
+    if (tier === "free") {
+      return dailyFreeIdeaId !== ideaId;
+    }
+    return true; // anon
   }
 
   // Skeleton loader
@@ -292,6 +322,10 @@ export default function IdeaFeed() {
             rating={savedMap.get(idea.id) ?? null}
             fitScore={idea.fit_score}
             fitReason={idea.fit_reason}
+            gated={isGated(idea.id)}
+            tier={tier}
+            dailyFreeAvailable={tier === "free" && !dailyFreeIdeaId}
+            onClaim={handleClaim}
           />
         ))}
       </div>

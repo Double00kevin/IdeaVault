@@ -1,5 +1,6 @@
 import { Hono } from "hono";
 import type { Env } from "../index";
+import { optionalAuth } from "../middleware/auth";
 import { verifyClerkToken } from "../middleware/auth";
 import { calculateFitScore, type UserProfile, type IdeaForScoring } from "../scoring/fitScore";
 
@@ -23,6 +24,8 @@ interface IdeaRow {
   created_at: string;
 }
 
+type Tier = "anon" | "free" | "pro";
+
 function formatIdea(row: IdeaRow) {
   return {
     id: row.id,
@@ -41,6 +44,88 @@ function formatIdea(row: IdeaRow) {
     source_type: row.source_type,
     created_at: row.created_at,
   };
+}
+
+/** Strip idea to public-safe fields for anon/free list views. */
+export function stripIdeaFields(idea: ReturnType<typeof formatIdea>) {
+  return {
+    id: idea.id,
+    title: idea.title,
+    category: idea.source_type,
+    confidence_score: idea.confidence_score,
+    created_at: idea.created_at,
+  };
+}
+
+/** Teaser fields for free users viewing a gated detail page. */
+export function teaserIdeaFields(idea: ReturnType<typeof formatIdea>) {
+  return {
+    ...stripIdeaFields(idea),
+    one_liner: idea.one_liner,
+  };
+}
+
+/**
+ * Determine subscription tier from userId.
+ * Returns "anon" if no userId, "pro" if active pro subscription, "free" otherwise.
+ */
+export async function getUserTier(userId: string | undefined, db: D1Database): Promise<Tier> {
+  if (!userId) return "anon";
+
+  const sub = await db
+    .prepare(
+      "SELECT plan FROM subscriptions WHERE user_id = ? AND plan = 'pro' AND status = 'active'",
+    )
+    .bind(userId)
+    .first();
+
+  return sub ? "pro" : "free";
+}
+
+/**
+ * Get the effective claim date using 06:00 UTC as the day boundary.
+ * If current UTC hour < 6, the "day" is still yesterday.
+ */
+export function getClaimDate(now?: Date): string {
+  const d = now ?? new Date();
+  const adjusted = new Date(d.getTime() - 6 * 60 * 60 * 1000);
+  return adjusted.toISOString().slice(0, 10); // YYYY-MM-DD
+}
+
+/** Check if user has already claimed a free idea today. Returns the idea_id or null. */
+export async function getDailyClaim(
+  userId: string,
+  db: D1Database,
+  now?: Date,
+): Promise<string | null> {
+  const claimDate = getClaimDate(now);
+  const row = await db
+    .prepare("SELECT idea_id FROM daily_free_claims WHERE user_id = ? AND claimed_date = ?")
+    .bind(userId, claimDate)
+    .first<{ idea_id: string }>();
+  return row?.idea_id ?? null;
+}
+
+/** Insert a daily free claim. Returns true on success. */
+export async function insertDailyClaim(
+  userId: string,
+  ideaId: string,
+  db: D1Database,
+  now?: Date,
+): Promise<boolean> {
+  const claimDate = getClaimDate(now);
+  try {
+    await db
+      .prepare(
+        "INSERT INTO daily_free_claims (user_id, idea_id, claimed_date) VALUES (?, ?, ?)",
+      )
+      .bind(userId, ideaId, claimDate)
+      .run();
+    return true;
+  } catch {
+    // Conflict — already claimed today (race condition safety)
+    return false;
+  }
 }
 
 /**
@@ -92,8 +177,8 @@ async function tryLoadProfile(
   };
 }
 
-/** GET /api/ideas — List ideas with cursor pagination and filters. */
-ideasHandler.get("/", async (c) => {
+/** GET /api/ideas — List ideas with cursor pagination, filters, and tier-based gating. */
+ideasHandler.get("/", optionalAuth(), async (c) => {
   const cursor = c.req.query("cursor"); // created_at value for cursor
   const limit = Math.min(parseInt(c.req.query("limit") ?? "20", 10), 50);
   const complexity = c.req.query("complexity"); // low, medium, high
@@ -101,9 +186,12 @@ ideasHandler.get("/", async (c) => {
   const sort = c.req.query("sort") ?? "recent"; // recent or confidence
   const smartMatch = c.req.query("smart_match") === "true";
 
-  // Attempt to load profile for smart match (non-blocking)
+  const userId: string | undefined = c.get("userId");
+  const tier = await getUserTier(userId, c.env.DB);
+
+  // Smart match: only for Pro users with a profile
   let profile: UserProfile | null = null;
-  if (smartMatch) {
+  if (smartMatch && tier === "pro") {
     profile = await tryLoadProfile(c.req.header("Authorization"), c.env.DB);
   }
   const applySmartMatch = smartMatch && profile !== null;
@@ -149,8 +237,8 @@ ideasHandler.get("/", async (c) => {
   const result = await c.env.DB.prepare(sql).bind(...bindings).all<IdeaRow>();
   const rows = result.results ?? [];
 
+  // Pro + Smart Match path — return full data with fit scores
   if (applySmartMatch) {
-    // Score each idea and sort by fit_score
     const scored = rows.map((row) => {
       const formatted = formatIdea(row);
       const ideaForScoring: IdeaForScoring = {
@@ -179,23 +267,56 @@ ideasHandler.get("/", async (c) => {
       ideas: sliced,
       next_cursor: nextCursor,
       has_more: hasMore,
+      tier,
     });
   }
 
-  // Normal (non-smart-match) response
+  // Standard pagination
   const hasMore = rows.length > limit;
-  const ideas = rows.slice(0, limit).map(formatIdea);
-  const nextCursor = hasMore ? ideas[ideas.length - 1]?.created_at : null;
+  const allIdeas = rows.slice(0, limit).map(formatIdea);
+  const nextCursor = hasMore ? allIdeas[allIdeas.length - 1]?.created_at : null;
 
+  // Pro users — return full data
+  if (tier === "pro") {
+    return c.json({
+      ideas: allIdeas,
+      next_cursor: nextCursor,
+      has_more: hasMore,
+      tier,
+    });
+  }
+
+  // Free users — stripped fields, except the daily claimed idea gets full data
+  if (tier === "free") {
+    const dailyFreeIdeaId = await getDailyClaim(userId!, c.env.DB);
+
+    const ideas = allIdeas.map((idea) => {
+      if (dailyFreeIdeaId && idea.id === dailyFreeIdeaId) {
+        return idea; // Full data for claimed idea
+      }
+      return stripIdeaFields(idea);
+    });
+
+    return c.json({
+      ideas,
+      next_cursor: nextCursor,
+      has_more: hasMore,
+      tier,
+      daily_free_idea_id: dailyFreeIdeaId,
+    });
+  }
+
+  // Anon users — stripped fields only
   return c.json({
-    ideas,
+    ideas: allIdeas.map(stripIdeaFields),
     next_cursor: nextCursor,
     has_more: hasMore,
+    tier,
   });
 });
 
-/** GET /api/ideas/:id — Get a single idea by ID. */
-ideasHandler.get("/:id", async (c) => {
+/** GET /api/ideas/:id — Get a single idea by ID with tier-based gating. */
+ideasHandler.get("/:id", optionalAuth(), async (c) => {
   const id = c.req.param("id");
 
   const result = await c.env.DB.prepare(
@@ -208,7 +329,44 @@ ideasHandler.get("/:id", async (c) => {
     return c.json({ error: "Idea not found" }, 404);
   }
 
-  return c.json(formatIdea(result));
+  const idea = formatIdea(result);
+  const userId: string | undefined = c.get("userId");
+  const tier = await getUserTier(userId, c.env.DB);
+
+  // Pro — full access
+  if (tier === "pro") {
+    return c.json(idea);
+  }
+
+  // Free — check/create daily claim
+  if (tier === "free") {
+    const existingClaim = await getDailyClaim(userId!, c.env.DB);
+
+    if (existingClaim === id) {
+      // Already claimed this idea — return full data
+      return c.json(idea);
+    }
+
+    if (!existingClaim) {
+      // No claim today — this idea becomes the daily free claim
+      await insertDailyClaim(userId!, id, c.env.DB);
+      return c.json(idea);
+    }
+
+    // Already claimed a different idea today — gated
+    return c.json({
+      ...teaserIdeaFields(idea),
+      gated: true,
+      upgrade_url: "/pro",
+    });
+  }
+
+  // Anon — teaser only
+  return c.json({
+    ...teaserIdeaFields(idea),
+    gated: true,
+    signup_required: true,
+  });
 });
 
 export { ideasHandler };

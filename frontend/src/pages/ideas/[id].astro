@@ -1,6 +1,7 @@
 ---
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import IdeaCard from "../../components/IdeaCard";
+import IdeaDetailGated from "../../components/IdeaDetailGated";
 
 const { id } = Astro.params;
 const API_BASE = import.meta.env.PUBLIC_API_URL ?? "http://localhost:8787/api";
@@ -9,6 +10,7 @@ let idea = null;
 let error = null;
 
 try {
+  // Fetch without auth — server-side render gets anon/teaser view
   const res = await fetch(`${API_BASE}/ideas/${id}`);
   if (res.ok) {
     idea = await res.json();
@@ -25,8 +27,8 @@ try {
 {idea ? (
   <BaseLayout
     title={`${idea.title} — AIdeaPulse`}
-    description={idea.one_liner}
-    ogImage={`${API_BASE}/og/${idea.id}`}
+    description={idea.one_liner ?? "Discover AI-analyzed startup ideas on AIdeaPulse"}
+    ogImage={`${API_BASE}/og/${idea.id ?? id}`}
   >
     <div class="mb-4">
       <a href="/" class="text-xs text-cyan-400 hover:underline">
@@ -34,7 +36,11 @@ try {
       </a>
     </div>
 
-    <IdeaCard idea={idea} client:load />
+    {idea.gated ? (
+      <IdeaDetailGated idea={idea} client:load />
+    ) : (
+      <IdeaCard idea={idea} client:load />
+    )}
 
     <div class="mt-8 text-center">
       <a href="/" class="text-sm text-cyan-400 hover:underline">
