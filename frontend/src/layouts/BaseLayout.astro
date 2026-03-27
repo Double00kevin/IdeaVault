@@ -1,4 +1,6 @@
 ---
+import HeaderAuth from "../components/HeaderAuth";
+
 interface Props {
   title: string;
   description?: string;
@@ -41,12 +43,7 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site ?? "https://ideavaul
         </a>
         <div class="flex items-center gap-4 text-sm text-text-secondary">
           <a href="/" class="hover:text-text-primary">Browse</a>
-          <a
-            href="#pro"
-            class="text-accent hover:underline"
-          >
-            Go Pro
-          </a>
+          <HeaderAuth client:load />
         </div>
       </nav>
     </header>
