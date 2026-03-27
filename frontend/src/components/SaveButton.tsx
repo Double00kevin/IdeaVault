@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, Component, type ReactNode } from "react";
 import { useAuth } from "@clerk/clerk-react";
 
 const API_BASE = import.meta.env.PUBLIC_API_URL ?? "/api";
@@ -9,7 +9,22 @@ interface Props {
   initialRating: number | null;
 }
 
-export default function SaveButton({ ideaId, initialSaved, initialRating }: Props) {
+// Error boundary: if Clerk context is missing, render nothing
+class ClerkGuard extends Component<{ children: ReactNode }, { failed: boolean }> {
+  state = { failed: false };
+  static getDerivedStateFromError() { return { failed: true }; }
+  render() { return this.state.failed ? null : this.props.children; }
+}
+
+export default function SaveButton(props: Props) {
+  return (
+    <ClerkGuard>
+      <SaveButtonInner {...props} />
+    </ClerkGuard>
+  );
+}
+
+function SaveButtonInner({ ideaId, initialSaved, initialRating }: Props) {
   const { isSignedIn, getToken } = useAuth();
   const [saved, setSaved] = useState(initialSaved);
   const [rating, setRating] = useState<number | null>(initialRating);
