@@ -11,7 +11,7 @@
 | ~~1~~ | ~~Reddit API approval follow-up~~ | ~~Kevin~~ | ~~N/A — using public .json feeds, no API needed (b2084e0)~~ | ~~Closed~~ |
 | ~~2~~ | ~~Test full Stripe checkout flow in sandbox~~ | ~~Kevin~~ | ~~Done 2026-03-28 — e2e verified, webhook fires, D1 sub active (9758e8a)~~ | ~~Done~~ |
 | ~~5~~ | ~~Delete old Google Client Secret (ending ****ruAM) in GCP~~ | ~~Kevin~~ | ~~Done 2026-03-28 — disabled then deleted in GCP console, only ****QTIz remains~~ | ~~Done~~ |
-| 6 | Create privacy policy + terms of service pages | Kevin | Required before Google OAuth verification/publishing to production | Pre-launch |
+| ~~6~~ | ~~Create privacy policy + terms of service pages~~ | ~~Kevin~~ | ~~Done 2026-03-28 — /privacy and /terms pages shipped (cc4d8a8)~~ | ~~Done~~ |
 | 7 | Submit Google OAuth app for verification + publish | Kevin | After privacy/terms pages live, exit Testing mode | Pre-launch |
 | ~~3~~ | ~~Set Clerk production keys in CF Pages + Workers~~ | ~~Kevin~~ | ~~Done f767bee — pk_live_ in .env, sk_live_ as Wrangler secret~~ | ~~Done~~ |
 | 4 | Stripe sandbox → live key transition | Kevin | After Stripe checkout tested, swap to live keys | Pre-launch |
@@ -53,6 +53,7 @@
 
 | Item | Notes |
 |------|-------|
+| Privacy policy + terms of service | cc4d8a8 — /privacy and /terms pages with full legal sections, footer links, cross-links, CCPA/GDPR subsections |
 | Deploy fixes + quick fixes batch | 19a4db4 — Workers deployed (content gating live), pipeline webhook URL fixed, systemd rescheduled (23:00 CT, 5h timeout), vitest config + nodejs_compat flag, localhost fallback removed, /api/profile 401 verified |
 | Content gating — three-tier visibility | 469ec31 — daily_free_claims D1 table, server-side tier detection (anon/free/pro), stripped fields for free/anon, first-click daily claim, IdeaDetailGated component, 11 vitest tests. ADR-004. |
 | Smart Match — Personalized Idea Matcher | ea50e31 — user_profiles D1 table, profile API, fitScore engine (7 tests), Smart Match toggle in feed, FitBadge on cards. Pro-only. ADR-003. |

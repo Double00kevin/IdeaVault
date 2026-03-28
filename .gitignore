@@ -38,3 +38,6 @@ dist/
 # Astro generated
 .astro/
 .gstack/
+
+# Working prompts
+_reference/

@@ -1,9 +1,9 @@
 # ADR-003: Smart Match — Personalized Idea Matcher
 
 **Date:** 2026-03-27
-**Status:** Implemented (ea50e31, 2026-03-27)
+**Status:** Proposed
 **Author:** Kevin Hillis
-**Sprint:** Sprint 4 — Monetization + Launch
+**Sprint:** Post-Sprint 4 (first post-launch Pro feature)
 
 ---
 
@@ -181,15 +181,10 @@ Show this as an onboarding prompt the first time a Pro user hits the feed withou
 
 ## Claude Code Prompts (Ready to Paste)
 
-**IMPORTANT:** Before starting any prompt below, read this spec first for full context:
-`docs/specs/003-smart-match-personalized-idea-matcher.md`
-
 ### Prompt 1: D1 Migration
 
 → CLAUDE CODE PROMPT:
 ```
-Read docs/specs/003-smart-match-personalized-idea-matcher.md for full context on the Smart Match feature.
-
 Create a new D1 migration file at workers/migrations/0005_user_profiles.sql with this content:
 
 CREATE TABLE IF NOT EXISTS user_profiles (
@@ -213,8 +208,6 @@ Verify the table exists with: wrangler d1 execute ideavault --remote --command "
 
 → CLAUDE CODE PROMPT:
 ```
-Read docs/specs/003-smart-match-personalized-idea-matcher.md for full context on the Smart Match feature.
-
 Create a new file workers/src/routes/profile.ts with two endpoints:
 
 1. POST /profile — Save/update user profile
@@ -246,8 +239,6 @@ Add it AFTER the saved route and BEFORE the stripe route. Follow the same Hono p
 
 → CLAUDE CODE PROMPT:
 ```
-Read docs/specs/003-smart-match-personalized-idea-matcher.md for full context on the Smart Match feature, especially the "Scoring Algorithm" section.
-
 Create a new file workers/src/scoring/fitScore.ts — a pure function that scores how well an idea matches a user profile.
 
 Input types:
@@ -308,8 +299,6 @@ Write vitest unit tests in workers/src/scoring/fitScore.test.ts covering:
 
 → CLAUDE CODE PROMPT:
 ```
-Read docs/specs/003-smart-match-personalized-idea-matcher.md for full context on the Smart Match feature.
-
 Modify workers/src/routes/ideas.ts to support Smart Match.
 
 When the query param smart_match=true is present:
@@ -334,8 +323,6 @@ Do NOT change the response shape for non-smart-match requests. The fit_score and
 
 → CLAUDE CODE PROMPT:
 ```
-Read docs/specs/003-smart-match-personalized-idea-matcher.md for full context on the Smart Match feature, especially the "Frontend Components" and "D1 Schema Change" sections for the predefined skill/niche lists.
-
 Create frontend/src/components/ProfileSetup.tsx — a React island for the Smart Match profile form.
 
 Requirements:
@@ -362,8 +349,6 @@ Requirements:
 
 → CLAUDE CODE PROMPT:
 ```
-Read docs/specs/003-smart-match-personalized-idea-matcher.md for full context on the Smart Match feature.
-
 Modify frontend/src/components/IdeaFeed.tsx to add Smart Match functionality:
 
 1. Add state: const [smartMatch, setSmartMatch] = useState(false);
@@ -397,8 +382,6 @@ Modify frontend/src/components/IdeaFeed.tsx to add Smart Match functionality:
 
 → CLAUDE CODE PROMPT:
 ```
-Read docs/specs/003-smart-match-personalized-idea-matcher.md for full context on the Smart Match feature.
-
 Modify frontend/src/components/IdeaCard.tsx to display the fit score when present:
 
 1. Add optional props to the Props interface:

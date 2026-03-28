@@ -4,6 +4,13 @@ All notable changes to AIdeaPulse (formerly IdeaVault) will be documented in thi
 
 ## [Unreleased]
 
+### 2026-03-28 — cc4d8a8: Privacy policy and terms of service pages
+- feat: /privacy page — full privacy policy with all sections, CCPA/GDPR subsections, styled to match site
+- feat: /terms page — full terms of service with 18 sections
+- feat: BaseLayout footer updated with Privacy Policy and Terms of Service links
+- feat: cross-links at bottom of each page pointing to the other
+- build verified clean, both pages in output
+
 ### 2026-03-28 — 19a4db4: Deploy fixes + quick fixes batch
 - deploy: Workers redeployed to production — content gating verified live (anon response strips pro fields, returns `tier: "anon"`)
 - fix: pipeline webhook URL updated from workers.dev to api.aideapulse.com in pipeline/.env
