@@ -1,0 +1,189 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+---
+
+<BaseLayout title="Privacy Policy — AIdeaPulse" description="How AIdeaPulse collects, uses, and protects your information.">
+  <div class="space-y-8">
+    <div>
+      <h1 class="text-2xl font-bold text-white">Privacy Policy</h1>
+      <p class="text-gray-400 mt-2 text-sm">Last updated: March 28, 2026</p>
+    </div>
+
+    <div class="space-y-8 text-gray-400 leading-relaxed">
+      <p>
+        AIdeaPulse ("we," "us," or "our") operates the website aideapulse.com (the "Service"). This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you visit our website and use our Service.
+      </p>
+
+      <!-- Information We Collect -->
+      <div>
+        <h2 class="text-lg font-bold text-white mb-3">Information We Collect</h2>
+
+        <h3 class="font-semibold text-white mb-2">Information You Provide Directly</h3>
+        <p class="mb-3">When you create an account or subscribe to our Service, we collect:</p>
+        <ul class="space-y-2 mb-6">
+          <li class="flex items-start gap-2">
+            <span class="text-cyan-400 mt-1">•</span>
+            <span><strong class="text-white">Account information:</strong> Your name and email address, provided through our authentication provider (Clerk). We do not collect or store passwords directly — authentication is handled entirely by Clerk.</span>
+          </li>
+          <li class="flex items-start gap-2">
+            <span class="text-cyan-400 mt-1">•</span>
+            <span><strong class="text-white">Payment information:</strong> When you subscribe to our Pro plan, payment processing is handled by Stripe. We do not store your credit card number, bank account details, or other financial instrument data on our servers. Stripe provides us with a customer identifier, subscription status, and plan type to manage your account.</span>
+          </li>
+          <li class="flex items-start gap-2">
+            <span class="text-cyan-400 mt-1">•</span>
+            <span><strong class="text-white">Profile preferences:</strong> Skills, budget range, niche interests, and experience level you optionally provide to personalize your experience.</span>
+          </li>
+          <li class="flex items-start gap-2">
+            <span class="text-cyan-400 mt-1">•</span>
+            <span><strong class="text-white">Email preferences:</strong> Your email address and preferred digest frequency if you opt into email notifications.</span>
+          </li>
+        </ul>
+
+        <h3 class="font-semibold text-white mb-2">Information Collected Automatically</h3>
+        <p class="mb-3">When you access the Service, we may automatically collect:</p>
+        <ul class="space-y-2">
+          <li class="flex items-start gap-2">
+            <span class="text-cyan-400 mt-1">•</span>
+            <span><strong class="text-white">Usage data:</strong> Pages visited, ideas viewed, ideas saved, and features used within the Service.</span>
+          </li>
+          <li class="flex items-start gap-2">
+            <span class="text-cyan-400 mt-1">•</span>
+            <span><strong class="text-white">Device and connection information:</strong> Browser type, operating system, IP address, and referring URLs. This data is collected by Cloudflare as part of standard web delivery and security services.</span>
+          </li>
+          <li class="flex items-start gap-2">
+            <span class="text-cyan-400 mt-1">•</span>
+            <span><strong class="text-white">Cookies and similar technologies:</strong> Cloudflare may set cookies for security and performance purposes. Clerk sets cookies to manage your authentication session. We do not use third-party advertising cookies or tracking pixels.</span>
+          </li>
+        </ul>
+      </div>
+
+      <!-- How We Use Your Information -->
+      <div>
+        <h2 class="text-lg font-bold text-white mb-3">How We Use Your Information</h2>
+        <p>We use the information we collect to:</p>
+        <ul class="space-y-2 mt-3">
+          <li class="flex items-start gap-2"><span class="text-cyan-400 mt-1">•</span><span>Provide, operate, and maintain the Service</span></li>
+          <li class="flex items-start gap-2"><span class="text-cyan-400 mt-1">•</span><span>Manage your account and subscription status</span></li>
+          <li class="flex items-start gap-2"><span class="text-cyan-400 mt-1">•</span><span>Enforce usage limits based on your subscription tier (Free or Pro)</span></li>
+          <li class="flex items-start gap-2"><span class="text-cyan-400 mt-1">•</span><span>Deliver email digest notifications if you have opted in</span></li>
+          <li class="flex items-start gap-2"><span class="text-cyan-400 mt-1">•</span><span>Process payments through Stripe for Pro subscriptions</span></li>
+          <li class="flex items-start gap-2"><span class="text-cyan-400 mt-1">•</span><span>Protect against unauthorized access, fraud, and abuse</span></li>
+          <li class="flex items-start gap-2"><span class="text-cyan-400 mt-1">•</span><span>Analyze aggregate usage patterns to improve the Service (we do not sell or share individual usage data with third parties)</span></li>
+        </ul>
+      </div>
+
+      <!-- How We Share Your Information -->
+      <div>
+        <h2 class="text-lg font-bold text-white mb-3">How We Share Your Information</h2>
+        <p class="mb-3">We do not sell your personal information. We share information only with the following service providers, each of which processes data solely to support the Service:</p>
+        <ul class="space-y-2">
+          <li class="flex items-start gap-2">
+            <span class="text-cyan-400 mt-1">•</span>
+            <span><strong class="text-white">Clerk —</strong> Authentication and identity management (name, email, session tokens)</span>
+          </li>
+          <li class="flex items-start gap-2">
+            <span class="text-cyan-400 mt-1">•</span>
+            <span><strong class="text-white">Stripe —</strong> Payment processing (email, subscription plan, payment method handled directly by Stripe)</span>
+          </li>
+          <li class="flex items-start gap-2">
+            <span class="text-cyan-400 mt-1">•</span>
+            <span><strong class="text-white">Cloudflare —</strong> Website hosting, CDN, DNS, and database (IP address, request metadata, account and idea data stored in D1)</span>
+          </li>
+          <li class="flex items-start gap-2">
+            <span class="text-cyan-400 mt-1">•</span>
+            <span><strong class="text-white">Resend —</strong> Email digest delivery (email address, digest content)</span>
+          </li>
+          <li class="flex items-start gap-2">
+            <span class="text-cyan-400 mt-1">•</span>
+            <span><strong class="text-white">Anthropic (Claude API) —</strong> AI-powered analysis of startup ideas (aggregated public data from source platforms; no personal user data is sent to the Claude API)</span>
+          </li>
+        </ul>
+        <p class="mt-3">We may also disclose your information if required by law, regulation, legal process, or governmental request, or if we believe disclosure is necessary to protect our rights, your safety, or the safety of others.</p>
+      </div>
+
+      <!-- Data Sources and AI-Generated Content -->
+      <div>
+        <h2 class="text-lg font-bold text-white mb-3">Data Sources and AI-Generated Content</h2>
+        <p>
+          AIdeaPulse aggregates publicly available information from third-party platforms including Reddit, Hacker News, Product Hunt, GitHub Trending, Dev.to, Lobsters, NewsAPI, and Google Trends. This data is processed through AI analysis to generate startup idea briefs. The idea briefs, scores, and analyses presented on the Service are generated by artificial intelligence and are provided for informational purposes only. They do not constitute business, financial, or investment advice.
+        </p>
+      </div>
+
+      <!-- Data Retention -->
+      <div>
+        <h2 class="text-lg font-bold text-white mb-3">Data Retention</h2>
+        <ul class="space-y-2">
+          <li class="flex items-start gap-2"><span class="text-cyan-400 mt-1">•</span><span>Account data is retained for as long as your account is active. If you delete your account, we will remove your personal data within 30 days, except where retention is required by law.</span></li>
+          <li class="flex items-start gap-2"><span class="text-cyan-400 mt-1">•</span><span>Saved ideas and preferences are deleted when your account is deleted.</span></li>
+          <li class="flex items-start gap-2"><span class="text-cyan-400 mt-1">•</span><span>Payment records may be retained by Stripe in accordance with their data retention policies.</span></li>
+          <li class="flex items-start gap-2"><span class="text-cyan-400 mt-1">•</span><span>Idea data (aggregated, non-personal) is retained indefinitely as part of the Service content library.</span></li>
+        </ul>
+      </div>
+
+      <!-- Data Security -->
+      <div>
+        <h2 class="text-lg font-bold text-white mb-3">Data Security</h2>
+        <p class="mb-3">We implement appropriate measures including:</p>
+        <ul class="space-y-2">
+          <li class="flex items-start gap-2"><span class="text-cyan-400 mt-1">•</span><span>TLS encryption on all data in transit</span></li>
+          <li class="flex items-start gap-2"><span class="text-cyan-400 mt-1">•</span><span>RS256 cryptographic signature verification on auth tokens</span></li>
+          <li class="flex items-start gap-2"><span class="text-cyan-400 mt-1">•</span><span>HMAC-SHA256 signature verification with timing-safe comparison on webhook communications</span></li>
+          <li class="flex items-start gap-2"><span class="text-cyan-400 mt-1">•</span><span>Cryptographic verification on payment webhook signatures</span></li>
+          <li class="flex items-start gap-2"><span class="text-cyan-400 mt-1">•</span><span>Rate limiting at the edge</span></li>
+          <li class="flex items-start gap-2"><span class="text-cyan-400 mt-1">•</span><span>Database access restricted to authenticated application services only</span></li>
+        </ul>
+        <p class="mt-3">No method of electronic transmission or storage is 100% secure.</p>
+      </div>
+
+      <!-- Your Rights and Choices -->
+      <div>
+        <h2 class="text-lg font-bold text-white mb-3">Your Rights and Choices</h2>
+        <p class="mb-3">Depending on your jurisdiction, you may have the right to:</p>
+        <ul class="space-y-2">
+          <li class="flex items-start gap-2"><span class="text-cyan-400 mt-1">•</span><span>Access the personal data we hold about you</span></li>
+          <li class="flex items-start gap-2"><span class="text-cyan-400 mt-1">•</span><span>Correct inaccurate or incomplete personal data</span></li>
+          <li class="flex items-start gap-2"><span class="text-cyan-400 mt-1">•</span><span>Delete your account and associated personal data</span></li>
+          <li class="flex items-start gap-2"><span class="text-cyan-400 mt-1">•</span><span>Opt out of email digest notifications at any time through your account settings</span></li>
+          <li class="flex items-start gap-2"><span class="text-cyan-400 mt-1">•</span><span>Export your saved ideas and profile data</span></li>
+        </ul>
+        <p class="mt-3">Contact support@aideapulse.com to exercise these rights. We will respond within 30 days.</p>
+
+        <h3 class="font-semibold text-white mt-6 mb-2">California Residents (CCPA)</h3>
+        <p>If you are a California resident, you have additional rights under the CCPA, including the right to know what personal information is collected, disclosed, or sold, and the right to opt out of the sale of personal information. We do not sell personal information.</p>
+
+        <h3 class="font-semibold text-white mt-6 mb-2">European Economic Area Residents (GDPR)</h3>
+        <p>If you are located in the EEA, our legal basis for processing includes: performance of our contract with you, your consent (email notifications), and our legitimate interests (security, fraud prevention, service improvement). You have the right to lodge a complaint with your local data protection authority.</p>
+      </div>
+
+      <!-- Children's Privacy -->
+      <div>
+        <h2 class="text-lg font-bold text-white mb-3">Children's Privacy</h2>
+        <p>The Service is not intended for individuals under the age of 16. We do not knowingly collect personal information from children under 16.</p>
+      </div>
+
+      <!-- Changes to This Privacy Policy -->
+      <div>
+        <h2 class="text-lg font-bold text-white mb-3">Changes to This Privacy Policy</h2>
+        <p>We may update this Privacy Policy from time to time. We will notify you of material changes by posting the updated policy with a revised "Last updated" date.</p>
+      </div>
+
+      <!-- Contact Us -->
+      <div>
+        <h2 class="text-lg font-bold text-white mb-3">Contact Us</h2>
+        <p>Email: support@aideapulse.com</p>
+        <p>Website: <a href="https://aideapulse.com" class="text-cyan-400 hover:underline">aideapulse.com</a></p>
+      </div>
+
+      <!-- Cross-link -->
+      <div class="pt-4 border-t border-gray-800">
+        <p class="text-sm">See also our <a href="/terms" class="text-cyan-400 hover:underline">Terms of Service</a>.</p>
+      </div>
+    </div>
+
+    <div class="pt-4 border-t border-gray-800">
+      <a href="/" class="text-cyan-400 hover:underline text-sm">
+        &larr; Browse ideas
+      </a>
+    </div>
+  </div>
+</BaseLayout>

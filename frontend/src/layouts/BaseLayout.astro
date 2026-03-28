@@ -82,8 +82,10 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site ?? "https://aideapul
 
     {!fullWidth && (
       <footer class="border-t border-gray-800 mt-12 py-6">
-        <div class="max-w-content mx-auto px-4 text-xs text-gray-500">
-          &copy; 2026 AIdeaPulse. AI-analyzed startup ideas, daily.
+        <div class="max-w-content mx-auto px-4 text-xs text-gray-500 flex flex-wrap items-center gap-x-4 gap-y-1">
+          <span>&copy; 2026 AIdeaPulse. AI-analyzed startup ideas, daily.</span>
+          <a href="/privacy" class="hover:text-gray-300 transition-colors">Privacy Policy</a>
+          <a href="/terms" class="hover:text-gray-300 transition-colors">Terms of Service</a>
         </div>
       </footer>
     )}
