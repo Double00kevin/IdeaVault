@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
 import { useAuth, useUser, RedirectToSignIn } from "@clerk/clerk-react";
-import AuthProvider from "./AuthProvider";
 
 const API_BASE = import.meta.env.PUBLIC_API_URL ?? "/api";
 
@@ -244,9 +243,5 @@ function DashboardContent() {
 }
 
 export default function Dashboard() {
-  return (
-    <AuthProvider>
-      <DashboardContent />
-    </AuthProvider>
-  );
+  return <DashboardContent />;
 }

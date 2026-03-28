@@ -4,7 +4,6 @@ import {
   UserButton,
   useAuth,
 } from "@clerk/clerk-react";
-import AuthProvider from "./AuthProvider";
 
 function AuthButtons() {
   const { isLoaded, isSignedIn } = useAuth();
@@ -47,9 +46,5 @@ function AuthButtons() {
 }
 
 export default function HeaderAuth() {
-  return (
-    <AuthProvider>
-      <AuthButtons />
-    </AuthProvider>
-  );
+  return <AuthButtons />;
 }
