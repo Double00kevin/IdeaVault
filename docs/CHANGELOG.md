@@ -4,6 +4,11 @@ All notable changes to AIdeaPulse (formerly IdeaVault) will be documented in thi
 
 ## [Unreleased]
 
+### 2026-03-28 — Pre-launch gates completed
+- **Stripe live:** sandbox keys replaced with production keys across all three Wrangler secrets (STRIPE_SECRET_KEY, STRIPE_WEBHOOK_SECRET, STRIPE_PRICE_ID). Live product: AIdeaPulse Pro (prod_UEQgecXm2DRu58), price: $12/mo (price_1TFxq1P3Smm2ZjICslGZI1Q7). Webhook endpoint at api.aideapulse.com/api/stripe/webhook listening for checkout.session.completed, customer.subscription.updated, customer.subscription.deleted.
+- **Google OAuth published:** GCP OAuth consent screen exited Testing mode → In production. Branding page updated with home page, privacy policy (/privacy), and terms of service (/terms) URLs. No logo uploaded yet — users see "unverified app" warning until logo + verification submitted (cosmetic, not blocking).
+- **Frontend redeployed:** privacy.astro and terms.astro (committed in cc4d8a8) now live on Cloudflare Pages.
+
 ### 2026-03-28 — 66da867: Apply D1 migrations in vitest test setup
 - fix: integration tests in workers/test/health.test.ts failed because miniflare D1 had no tables
 - added workers/test/setup.ts — applies full D1 schema via env.DB.batch() before tests run
