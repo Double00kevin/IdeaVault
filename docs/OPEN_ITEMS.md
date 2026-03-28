@@ -53,6 +53,7 @@
 
 | Item | Notes |
 |------|-------|
+| Deploy fixes + quick fixes batch | 19a4db4 — Workers deployed (content gating live), pipeline webhook URL fixed, systemd rescheduled (23:00 CT, 5h timeout), vitest config + nodejs_compat flag, localhost fallback removed, /api/profile 401 verified |
 | Content gating — three-tier visibility | 469ec31 — daily_free_claims D1 table, server-side tier detection (anon/free/pro), stripped fields for free/anon, first-click daily claim, IdeaDetailGated component, 11 vitest tests. ADR-004. |
 | Smart Match — Personalized Idea Matcher | ea50e31 — user_profiles D1 table, profile API, fitScore engine (7 tests), Smart Match toggle in feed, FitBadge on cards. Pro-only. ADR-003. |
 | Clerk production auth fully live | DNS 5/5 verified, SSL certs issued, prod keys deployed (f767bee), cross-island auth fix (1cdd9b2) |

@@ -15,7 +15,7 @@ Sprint 4 (Monetization + Launch) — domain live, Clerk production auth, homepag
 ```
 KITT (Python 3.12)                              Cloudflare
 ┌───────────────────────────┐                  ┌──────────────────────────┐
-│  systemd timer (daily 6am)│                  │  Hono Worker             │
+│  systemd timer (23:00 CT) │                  │  Hono Worker             │
 │         │                 │                  │    ├─ POST /api/ingest   │
 │         ▼                 │                  │    ├─ GET /api/ideas     │
 │  Scrapers                 │  HMAC-SHA256     │    ├─ GET /api/ideas/:id │

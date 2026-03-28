@@ -4,6 +4,16 @@ All notable changes to AIdeaPulse (formerly IdeaVault) will be documented in thi
 
 ## [Unreleased]
 
+### 2026-03-28 — 19a4db4: Deploy fixes + quick fixes batch
+- deploy: Workers redeployed to production — content gating verified live (anon response strips pro fields, returns `tier: "anon"`)
+- fix: pipeline webhook URL updated from workers.dev to api.aideapulse.com in pipeline/.env
+- ops: systemd timer rescheduled to 23:00 Central (DST-aware via TimezoneOfTimer), service timeout increased to 18000s (5 hours)
+- fix: vitest config updated to reference wrangler.jsonc instead of wrangler.toml (f0dc104)
+- fix: removed localhost:8787 fallback in ideas/[id].astro — now uses /api like all other components (6285df9)
+- fix: added nodejs_compat compatibility flag to wrangler.jsonc — vitest now initializes and runs (18 unit tests passing) (19a4db4)
+- verified: /api/profile returns 401 for unauthenticated requests (was 404 pre-deploy)
+- docs: deploy verification and quick-fix results logged to docs/testing-results/
+
 ### 2026-03-28 — 9758e8a: Stripe checkout flow verified end-to-end
 - fix: Google OAuth Client Secret mismatch fixed (rotated secret in GCP, updated in Clerk SSO)
 - fix: attempted @clerk/astro integration (f25b84d) — broke SSR on Cloudflare Workers, reverted (bb0bd7b, 1bd1bb1)
