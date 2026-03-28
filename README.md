@@ -8,7 +8,7 @@ Sprint 4 (Monetization + Launch) — domain live, Clerk production auth, homepag
 
 **Live:** https://aideapulse.com | API: https://api.aideapulse.com
 
-**What's built:** 8-source pipeline → Claude two-stage analysis → D1 storage → dark-theme Astro landing page with constellation hero, marketing sections, Clerk production auth, saved ideas/ratings, email digests, Stripe Pro subscriptions ($12/mo), rate limiting, Smart Match personalized scoring (Pro).
+**What's built:** 8-source pipeline → Claude two-stage analysis → D1 storage → dark-theme Astro landing page with full-page constellation background, animated ECG heartbeat dividers, "Today's Idea" free card + locked titles teaser, Clerk production auth, saved ideas/ratings, email digests, Stripe Pro subscriptions ($12/mo), rate limiting, Smart Match personalized scoring (Pro).
 
 ## Architecture
 

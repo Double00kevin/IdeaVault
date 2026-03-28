@@ -4,6 +4,20 @@ All notable changes to AIdeaPulse (formerly IdeaVault) will be documented in thi
 
 ## [Unreleased]
 
+### 2026-03-28 — d86b79b: Landing page redesign
+- feat: redesigned landing page with animated ECG heartbeat pulse dividers (new EcgDivider.tsx React island)
+- Full-page constellation background (fixed position, visible behind all sections)
+- Hero section simplified — removed Live Feed Preview mockup, updated trust line to "1 free idea daily"
+- Source strip simplified — removed 8 individual SVG logos, bold "SCANNING ALL SOURCES EVERY DAY" label
+- New unified "Today's Idea" section: free idea card with badge, card legend (6-item grid), 10 locked title rows (first 4 visible, rest blurred), upgrade CTA box
+- How It Works updated: Scrape→"Multi-Agent Research", Deliver→"Discover", updated descriptions
+- Removed "Stop guessing what to build" value proposition section
+- Pricing tiers updated: Free = 1 idea/day + view titles (rest disabled), Pro = all features bold
+- Competitor callout updated: "Others charge $299–$999/year..."
+- Footer legal links now point to /terms and /privacy
+- 5 ECG dividers placed between sections (none between hero and source strip)
+- Section spacing normalized (py-10 sections, my-10 dividers, transparent backgrounds)
+
 ### 2026-03-28 — c14425d: Pre-launch gates completed
 - **Stripe live:** sandbox keys replaced with production keys across all three Wrangler secrets (STRIPE_SECRET_KEY, STRIPE_WEBHOOK_SECRET, STRIPE_PRICE_ID). Live product: AIdeaPulse Pro (prod_UEQgecXm2DRu58), price: $12/mo (price_1TFxq1P3Smm2ZjICslGZI1Q7). Webhook endpoint at api.aideapulse.com/api/stripe/webhook listening for checkout.session.completed, customer.subscription.updated, customer.subscription.deleted.
 - **Google OAuth published:** GCP OAuth consent screen exited Testing mode → In production. Branding page updated with home page, privacy policy (/privacy), and terms of service (/terms) URLs. No logo uploaded yet — users see "unverified app" warning until logo + verification submitted (cosmetic, not blocking).
