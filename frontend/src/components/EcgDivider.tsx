@@ -187,11 +187,12 @@ export default function EcgDivider({ index = 0 }: Props) {
   }, [index]);
 
   return (
-    <canvas
-      ref={canvasRef}
-      className="w-full my-10"
-      style={{ height: 80 }}
-      aria-hidden="true"
-    />
+    <div className="w-full my-10" style={{ height: 80 }}>
+      <canvas
+        ref={canvasRef}
+        style={{ width: "100%", height: "100%" }}
+        aria-hidden="true"
+      />
+    </div>
   );
 }
