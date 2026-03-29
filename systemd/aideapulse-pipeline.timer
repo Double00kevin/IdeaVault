@@ -1,8 +1,9 @@
 [Unit]
-Description=Run AIdeaPulse pipeline daily at 6am UTC
+Description=Run AIdeaPulse pipeline nightly at 11pm Central
 
 [Timer]
-OnCalendar=*-*-* 06:00:00
+OnCalendar=*-*-* 23:00:00
+TimezoneOfTimer=America/Chicago
 Persistent=true
 
 [Install]
