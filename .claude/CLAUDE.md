@@ -45,6 +45,7 @@ AIdeaPulse is an AI-powered startup idea discovery SaaS platform. It scrapes dem
 - Conventional commits: feat:, fix:, chore:, docs:
 - Every change logged in docs/CHANGELOG.md
 - Security changes noted separately
+- Significant architecture decisions logged in docs/decisions/ as ADRs
 
 ## Close The Loop Protocol
 
