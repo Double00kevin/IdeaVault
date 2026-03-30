@@ -82,7 +82,7 @@ def _scrape_instance(
                 reply_count=topic.get("reply_count", 0),
                 views=topic.get("views", 0),
                 category=cat_name,
-                tags=topic.get("tags", []) or [],
+                tags=[t["name"] if isinstance(t, dict) else t for t in (topic.get("tags", []) or [])],
                 url=f"{base_url}/t/{slug}/{topic_id}",
                 created_at=topic.get("created_at", ""),
             )
