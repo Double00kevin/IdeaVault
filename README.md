@@ -1,6 +1,6 @@
 # AIdeaPulse
 
-AI-powered startup idea discovery platform. Scrapes demand signals from 8 sources (Reddit, Hacker News, Product Hunt, GitHub Trending, Dev.to, Lobste.rs, NewsAPI, Google Trends), runs them through Claude API for structured analysis, and serves idea briefs through a web app.
+AI-powered startup idea discovery platform. Scrapes demand signals from 12 sources (Reddit, Hacker News, Product Hunt, GitHub Trending, Dev.to, Lobste.rs, NewsAPI, Google Trends, Stack Exchange, GitHub Issues, Discourse Forums, PyPI/npm), runs them through Claude API for structured analysis, and serves idea briefs through a web app.
 
 ## Status
 
@@ -8,7 +8,7 @@ Sprint 4 (Monetization + Launch) — domain live, Clerk production auth, homepag
 
 **Live:** https://aideapulse.com | API: https://api.aideapulse.com
 
-**What's built:** 8-source pipeline → Claude two-stage analysis → D1 storage → dark-theme Astro landing page with full-page constellation background, animated ECG heartbeat dividers, "Today's Idea" free card + locked titles teaser, Clerk production auth, saved ideas/ratings, email digests, Stripe Pro subscriptions ($12/mo), rate limiting, Smart Match personalized scoring (Pro).
+**What's built:** 12-source pipeline → Claude two-stage analysis → D1 storage → dark-theme Astro landing page with full-page constellation background, animated ECG heartbeat dividers, "Today's Idea" free card + locked titles teaser, Clerk production auth, saved ideas/ratings, email digests, Stripe Pro subscriptions ($12/mo), rate limiting, Smart Match personalized scoring (Pro).
 
 ## Architecture
 
@@ -18,12 +18,12 @@ KITT (Python 3.12)                              Cloudflare
 │  systemd timer (23:00 CT) │                  │  Hono Worker             │
 │         │                 │                  │    ├─ POST /api/ingest   │
 │         ▼                 │                  │    ├─ GET /api/ideas     │
-│  Scrapers                 │  HMAC-SHA256     │    ├─ GET /api/ideas/:id │
-│  ├─ Reddit (10 subs)     │  ──────────────► │    ├─ GET /api/og/:id    │
-│  ├─ Product Hunt          │                  │    └─ GET /api/health    │
-│  └─ Google Trends         │                  │         │                │
+│  12 Scrapers              │  HMAC-SHA256     │    ├─ GET /api/ideas/:id │
+│  ├─ Reddit, HN, PH …    │  ──────────────► │    ├─ GET /api/og/:id    │
+│  ├─ SE, GH Issues …      │                  │    └─ GET /api/health    │
+│  └─ Discourse, PyPI/npm  │                  │         │                │
 │         │                 │                  │         ▼                │
-│  Pre-filter (top 30)     │                  │  D1 (ideas table)        │
+│  Pre-filter (top ~125)   │                  │  D1 (ideas table)        │
 │         │                 │                  │                          │
 │  Claude API analysis      │                  │  CF Pages (Astro)        │
 │         │                 │                  │    ├─ / (landing + feed) │
@@ -31,8 +31,8 @@ KITT (Python 3.12)                              Cloudflare
 └───────────────────────────┘                  └──────────────────────────┘
 ```
 
-- **Ingestion pipeline** (Python 3.12) runs on KITT, scrapes 8 sources (Reddit, HN, PH, GitHub Trending, Dev.to, Lobste.rs, NewsAPI, Google Trends)
-- **Pre-filter** keeps top ~65 signals by per-source engagement quotas before Claude API analysis
+- **Ingestion pipeline** (Python 3.12) runs on KITT, scrapes 12 sources (Reddit, HN, PH, GitHub Trending, Dev.to, Lobste.rs, NewsAPI, Google Trends, Stack Exchange, GitHub Issues, Discourse Forums, PyPI/npm)
+- **Pre-filter** keeps top ~125 signals by per-source engagement quotas before Claude API analysis
 - **Claude API analysis** produces structured idea briefs with market sizing, competitors, build complexity, confidence score (0-100)
 - **Cloudflare Workers** (Hono) API with HMAC-authenticated ingest webhook, cursor-paginated list, fuzzy dedup
 - **Cloudflare D1** stores ideas with JSON columns and normalized title dedup
@@ -50,10 +50,10 @@ KITT (Python 3.12)                              Cloudflare
 ```
 AIdeaPulse/
   pipeline/            # Python ingestion + analysis pipeline (runs on KITT)
-    scrapers/          # Reddit, HN, PH, GitHub Trending, Dev.to, Lobste.rs, NewsAPI, Trends
+    scrapers/          # 12 sources: Reddit, HN, PH, GitHub Trending/Issues, Dev.to, Lobste.rs, NewsAPI, Trends, Stack Exchange, Discourse, PyPI/npm
     analysis/          # Claude API analysis with JSON parsing + confidence rubric
     push/              # HMAC-authenticated webhook push with retry + spool
-    prefilter.py       # Per-source engagement quotas (~65 signals total)
+    prefilter.py       # Per-source engagement quotas (~125 signals total)
     tests/             # 15 pytest tests
   workers/             # Cloudflare Workers API (Hono + TypeScript)
     src/routes/        # ingest, ideas, profile, health, og endpoints

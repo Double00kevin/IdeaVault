@@ -4,6 +4,12 @@ All notable changes to AIdeaPulse (formerly IdeaVault) will be documented in thi
 
 ## [Unreleased]
 
+### 2026-03-29 — e453238: Expand pipeline from 8 to 12 sources
+- feat: 4 new demand signal scrapers — Stack Exchange (REST API, 5 SE sites), GitHub Issues (search API, feature requests by reaction count), Discourse Forums (6 public instances: OpenAI, Fly.io, Netlify, Discourse Meta, Grafana, Elastic), PyPI/npm package trends (RSS + pypistats + npm registry)
+- New prefilter functions: top 15 per source by engagement (SE score w/ unanswered boost, GH reactions, Discourse likes+replies, package downloads)
+- Pipeline now produces ~726 additional raw signals per run, filtered to ~60 for Claude analysis
+- Zero new dependencies or env vars required — all free APIs
+
 ### 2026-03-28 — d86b79b: Landing page redesign
 - feat: redesigned landing page with animated ECG heartbeat pulse dividers (new EcgDivider.tsx React island)
 - Full-page constellation background (fixed position, visible behind all sections)

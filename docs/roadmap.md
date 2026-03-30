@@ -19,7 +19,7 @@ Check items off as they ship. Log details in `docs/CHANGELOG.md`.
 - [x] NewsAPI scraper (optional key, startup/SaaS/AI queries)
 - [x] Google Trends scraper (pytrends, optional enrichment)
 - [x] Product Hunt scraper (GraphQL API, date-filtered)
-- [x] Pre-filter top 65 signals by engagement (per-source quotas)
+- [x] Pre-filter top signals by engagement (per-source quotas — originally 65, now ~125 with 12 sources)
 - [x] Claude API analysis module (JSON parsing, confidence rubric)
 - [x] D1 schema + migrations (deployed to Cloudflare)
 - [x] Workers API with Hono (ingest webhook HMAC, list, get, health)
@@ -55,6 +55,7 @@ Check items off as they ship. Log details in `docs/CHANGELOG.md`.
 - [x] Domain + DNS setup (aideapulse.com → Pages, api.aideapulse.com → Workers, Clerk production CNAMEs)
 - [x] Clerk production auth live (prod keys deployed, cross-island fix, SSL certs issued — f767bee, 1cdd9b2)
 - [x] Content gating — three-tier visibility: anon/free/pro (ADR-004, 469ec31, 2026-03-27)
+- [x] Expand pipeline from 8 to 12 sources — Stack Exchange, GitHub Issues, Discourse Forums, PyPI/npm (2026-03-29, e453238)
 - [ ] Launch (Product Hunt, Reddit, HN)
 
 ## Sprint 5 — Smart Match + Pro Features (next)
