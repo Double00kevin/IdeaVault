@@ -57,7 +57,12 @@ When asked to "close the loop":
 3. Append summary to `docs/CHANGELOG.md` with commit hash.
 4. Verify matching roadmap item is checked off in `docs/roadmap.md`.
 5. Verify `README.md` reflects current capabilities — update if stale.
-6. Check all other docs for staleness against what just shipped.
+6. Full change audit:
+   a. Grep entire repo for key terms from the change (old values, prices, feature names, version numbers). Every hit is either updated or confirmed historical. Report the sweep results.
+   b. Check ALL docs/ files for staleness — OPEN_ITEMS.md, specs, ADRs, decisions/, any doc that could reference what changed.
+   c. Check external systems affected by the change (Stripe prices/products, Wrangler secrets, DNS, Clerk config, GitHub Actions workflows). Confirm each is current.
+   d. Check ~/.claude/projects/ memory files for stale references. Update or remove outdated entries.
+   e. Report what was checked and what was updated — nothing is assumed clean without verification.
 7. Stage, commit (`docs: close the loop for [hash]`), and push.
 
 ## Skill routing
