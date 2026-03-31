@@ -27,7 +27,14 @@ export default function IdeaDetailGated({ idea }: { idea: GatedIdea }) {
   useEffect(() => {
     (async () => {
       try {
-        const clerk = (window as any).Clerk;
+        // Wait for Clerk to attach to window (race condition with client:load)
+        let clerk = (window as any).Clerk;
+        if (!clerk) {
+          for (let i = 0; i < 50 && !clerk; i++) {
+            await new Promise((r) => setTimeout(r, 100));
+            clerk = (window as any).Clerk;
+          }
+        }
         if (!clerk) {
           setLoading(false);
           return;
