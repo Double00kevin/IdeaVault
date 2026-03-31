@@ -235,7 +235,7 @@ def _format_discourse_signal(signal: DiscourseSignal) -> tuple[str, list[str], d
     if signal.category:
         text += f"Category: {signal.category}\n"
     if signal.tags:
-        text += f"Tags: {', '.join(signal.tags)}\n"
+        text += f"Tags: {', '.join(t if isinstance(t, str) else t.get('name', str(t)) for t in signal.tags)}\n"
     if signal.excerpt:
         text += f"Excerpt: {signal.excerpt[:800]}\n"
     community = {
