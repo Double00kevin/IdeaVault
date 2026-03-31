@@ -56,6 +56,6 @@ Free users get limited access to AI features (1 validation/month, 1 action/day, 
 
 - Anthropic API key is now a Wrangler secret on Cloudflare (encrypted at rest)
 - API costs scale with user activity: ~$0.14/day per Pro user at average use, ~$0.63/day at max limits
-- At 100 Pro users, total API cost ~$14/day ($420/mo) vs $1,200/mo revenue (65% margin)
+- At 100 Pro users, total API cost ~$14/day ($420/mo) vs $2,500/mo revenue ($25/mo, 83% margin)
 - Pipeline cost increases by ~$0.35/night for framework analysis stage
 - D1 schema now has 12 migrations, 3 new tables (validations, idea_actions, generated_ideas), and 1 FTS5 virtual table

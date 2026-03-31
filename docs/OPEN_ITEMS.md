@@ -1,5 +1,5 @@
 # AIdeaPulse — Open Items & Action Tracker
-**Last Updated:** 2026-03-28
+**Last Updated:** 2026-03-31
 **Maintained by:** Kevin
 
 ---
@@ -14,7 +14,7 @@
 | ~~6~~ | ~~Create privacy policy + terms of service pages~~ | ~~Kevin~~ | ~~Done 2026-03-28 — /privacy and /terms pages shipped (cc4d8a8)~~ | ~~Done~~ |
 | 7 | Submit Google OAuth app for verification + publish | Kevin | After privacy/terms pages live, exit Testing mode | Pre-launch |
 | ~~3~~ | ~~Set Clerk production keys in CF Pages + Workers~~ | ~~Kevin~~ | ~~Done f767bee — pk_live_ in .env, sk_live_ as Wrangler secret~~ | ~~Done~~ |
-| 4 | Stripe sandbox → live key transition | Kevin | After Stripe checkout tested, swap to live keys | Pre-launch |
+| ~~4~~ | ~~Stripe sandbox → live key transition~~ | ~~Kevin~~ | ~~Done 2026-03-28 — live keys deployed (c14425d)~~ | ~~Done~~ |
 
 ---
 
@@ -31,7 +31,7 @@
 | Item | Decision | Date |
 |------|----------|------|
 | Auth approach | Clerk (frontend + JWT in Workers) | Sprint 3 |
-| Pro tier pricing | $12/mo | Sprint 3 |
+| Pro tier pricing | $25/mo (changed from $12/mo on 2026-03-31) | Sprint 3 → updated Sprint 6 |
 | Core user persona | Solo indie hacker with day job | Sprint 1 |
 | D1 row limits | 10GB free, fine for year 1 | Sprint 2 |
 | R2 usage | Not needed for MVP, raw data stays on KITT | Sprint 2 |
@@ -53,6 +53,9 @@
 
 | Item | Notes |
 |------|-------|
+| Sprint 6 — AI Tools | 1315bd3, bd2e1f8 — Framework Analysis (pipeline), Validate My Idea (Sonnet real-time), AI Actions (Haiku real-time, 5 deep dives), Idea Generator (Sonnet, Smart Match profile). Durable Object rate limiting, FTS5 search, @anthropic-ai/sdk on Workers. ADR-005. |
+| Pro pricing $12→$25/mo | 698e8aa — New Stripe price (price_1THBLhP3Smm2ZjICcs2dSyhM), all frontend/docs updated |
+| Sprint 5 — Match Ideabrowser Core | 5edf8d4 — Rich narratives, multi-dimensional scores, community signals, trends dashboard, data export, 12-source pipeline |
 | Privacy policy + terms of service | cc4d8a8 — /privacy and /terms pages with full legal sections, footer links, cross-links, CCPA/GDPR subsections |
 | Deploy fixes + quick fixes batch | 19a4db4 — Workers deployed (content gating live), pipeline webhook URL fixed, systemd rescheduled (23:00 CT, 5h timeout), vitest config + nodejs_compat flag, localhost fallback removed, /api/profile 401 verified |
 | Content gating — three-tier visibility | 469ec31 — daily_free_claims D1 table, server-side tier detection (anon/free/pro), stripped fields for free/anon, first-click daily claim, IdeaDetailGated component, 11 vitest tests. ADR-004. |

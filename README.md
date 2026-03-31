@@ -4,7 +4,7 @@ AI-powered startup idea discovery platform. Scrapes demand signals from 12 sourc
 
 ## Status
 
-Sprint 6 complete (Surpass With AI Tools) — 4 new AI-powered features deployed. 201+ ideas in production. GitHub Actions CI/CD. Pricing adjustment and launch planned.
+Sprint 6 complete (Surpass With AI Tools) — 4 new AI-powered features deployed. 201+ ideas in production. Pro tier at $25/mo. GitHub Actions CI/CD. Launch pending.
 
 **Live:** https://aideapulse.com | API: https://api.aideapulse.com | Validate: https://aideapulse.com/validate | Generate: https://aideapulse.com/generate | Trends: https://aideapulse.com/trends
 
