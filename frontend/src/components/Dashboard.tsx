@@ -1,6 +1,4 @@
 import { useState, useEffect } from "react";
-import { useAuth, useUser, RedirectToSignIn } from "@clerk/clerk-react";
-import AuthProvider from "./AuthProvider";
 
 const API_BASE = import.meta.env.PUBLIC_API_URL ?? "/api";
 
@@ -21,9 +19,23 @@ const complexityConfig: Record<string, { color: string; label: string }> = {
   high: { color: "bg-red-500", label: "High" },
 };
 
+async function getClerkToken(): Promise<string | null> {
+  try {
+    const clerk = (window as any).Clerk;
+    if (!clerk) return null;
+    await clerk.load();
+    if (!clerk.user) return null;
+    return (await clerk.session?.getToken()) ?? null;
+  } catch {
+    return null;
+  }
+}
+
 function DashboardContent() {
-  const { isLoaded, isSignedIn, getToken } = useAuth();
-  const { user } = useUser();
+  const [isLoaded, setIsLoaded] = useState(false);
+  const [isSignedIn, setIsSignedIn] = useState(false);
+  const [userName, setUserName] = useState<string | null>(null);
+  const [userEmail, setUserEmail] = useState<string | null>(null);
   const [saved, setSaved] = useState<SavedIdea[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -31,18 +43,35 @@ function DashboardContent() {
   const [digestEmail, setDigestEmail] = useState<string>("");
   const [digestSaving, setDigestSaving] = useState(false);
 
+  // Initialize Clerk state from window.Clerk
+  useEffect(() => {
+    (async () => {
+      try {
+        const clerk = (window as any).Clerk;
+        if (!clerk) { setIsLoaded(true); return; }
+        await clerk.load();
+        setIsLoaded(true);
+        if (clerk.user) {
+          setIsSignedIn(true);
+          setUserName(clerk.user.firstName ?? null);
+          setUserEmail(clerk.user.primaryEmailAddress?.emailAddress ?? null);
+        }
+      } catch {
+        setIsLoaded(true);
+      }
+    })();
+  }, []);
+
   useEffect(() => {
     if (!isSignedIn) return;
     (async () => {
       try {
-        const token = await getToken();
+        const token = await getClerkToken();
+        if (!token) return;
+        const headers = { Authorization: `Bearer ${token}` };
         const [savedRes, digestRes] = await Promise.all([
-          fetch(`${API_BASE}/saved`, {
-            headers: { Authorization: `Bearer ${token}` },
-          }),
-          fetch(`${API_BASE}/digest/preferences`, {
-            headers: { Authorization: `Bearer ${token}` },
-          }),
+          fetch(`${API_BASE}/saved`, { headers }),
+          fetch(`${API_BASE}/digest/preferences`, { headers }),
         ]);
         if (savedRes.ok) {
           const data = await savedRes.json();
@@ -64,7 +93,8 @@ function DashboardContent() {
   async function saveDigestPrefs() {
     setDigestSaving(true);
     try {
-      const token = await getToken();
+      const token = await getClerkToken();
+      if (!token) return;
       await fetch(`${API_BASE}/digest/preferences`, {
         method: "POST",
         headers: {
@@ -81,7 +111,8 @@ function DashboardContent() {
   }
 
   async function unsave(ideaId: string) {
-    const token = await getToken();
+    const token = await getClerkToken();
+    if (!token) return;
     await fetch(`${API_BASE}/saved/${ideaId}`, {
       method: "DELETE",
       headers: { Authorization: `Bearer ${token}` },
@@ -100,14 +131,17 @@ function DashboardContent() {
   }
 
   if (!isSignedIn) {
-    return <RedirectToSignIn />;
+    // Redirect to sign-in via Clerk JS
+    const clerk = (window as any).Clerk;
+    if (clerk) clerk.redirectToSignIn();
+    return null;
   }
 
   return (
     <div>
       <div className="mb-6">
         <h1 className="text-lg font-bold text-white">
-          {user?.firstName ? `${user.firstName}'s` : "Your"} Dashboard
+          {userName ? `${userName}'s` : "Your"} Dashboard
         </h1>
         <p className="text-sm text-gray-400 mt-1">
           {saved.length} saved idea{saved.length !== 1 ? "s" : ""}
@@ -127,7 +161,7 @@ function DashboardContent() {
               type="email"
               value={digestEmail}
               onChange={(e) => setDigestEmail(e.target.value)}
-              placeholder={user?.primaryEmailAddress?.emailAddress ?? "you@example.com"}
+              placeholder={userEmail ?? "you@example.com"}
               className="border border-gray-700 rounded px-2 py-1 bg-gray-800 text-gray-200 text-sm w-56"
             />
           </div>
@@ -244,9 +278,5 @@ function DashboardContent() {
 }
 
 export default function Dashboard() {
-  return (
-    <AuthProvider>
-      <DashboardContent />
-    </AuthProvider>
-  );
+  return <DashboardContent />;
 }

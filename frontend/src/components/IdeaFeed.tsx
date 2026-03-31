@@ -324,7 +324,21 @@ export default function IdeaFeed() {
             onClick={async () => {
               const token = await getClerkToken();
               if (!token) return;
-              window.location.href = `${API_BASE}/export/ideas?scope=all`;
+              try {
+                const res = await fetch(`${API_BASE}/export/ideas?scope=all`, {
+                  headers: { Authorization: `Bearer ${token}` },
+                });
+                if (!res.ok) throw new Error(`Export failed: ${res.status}`);
+                const blob = await res.blob();
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement("a");
+                a.href = url;
+                a.download = `aideapulse-ideas-${new Date().toISOString().slice(0, 10)}.json`;
+                a.click();
+                URL.revokeObjectURL(url);
+              } catch {
+                // Silently fail — user can retry
+              }
             }}
             className="flex items-center gap-1.5 px-2.5 py-1 rounded border border-gray-700 text-gray-400 hover:text-white hover:border-gray-500 transition-colors cursor-pointer text-xs"
           >
