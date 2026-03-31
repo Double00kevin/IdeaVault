@@ -86,7 +86,7 @@ Check items off as they ship. Log details in `docs/CHANGELOG.md`.
 - [ ] Weekly Digest Enhancement — trend analysis + AI Market Pulse
 
 ## Launch Milestone
-- [ ] Pricing adjustment — increase Pro from $12/mo to $20-25/mo (pre-launch)
+- [x] Pricing adjustment — Pro increased from $12/mo to $25/mo, new Stripe price created (price_1THBLhP3Smm2ZjICcs2dSyhM, 2026-03-31)
 - [ ] Launch (Product Hunt, Reddit, HN) — after all product features are complete and polished
 
 ## Backlog

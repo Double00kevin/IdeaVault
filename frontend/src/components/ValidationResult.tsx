@@ -154,7 +154,7 @@ export default function ValidationResult({ result }: Props) {
             href="/pro"
             className="text-xs text-green-400 hover:text-green-300 underline"
           >
-            Upgrade to Pro — $12/mo
+            Upgrade to Pro — $25/mo
           </a>
         </div>
       )}
