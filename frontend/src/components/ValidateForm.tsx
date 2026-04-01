@@ -85,7 +85,7 @@ export default function ValidateForm() {
     <div className="max-w-2xl mx-auto">
       <h2 className="text-xl font-bold text-green-400 mb-2">Validate My Idea</h2>
       <p className="text-sm text-gray-400 mb-6">
-        Submit your idea. We'll cross-reference it against 200+ demand signals from 12
+        Submit your idea. We'll cross-reference it against 200+ demand signals from 13
         sources and give you a straight answer.
       </p>
 

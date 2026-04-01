@@ -1,14 +1,14 @@
 # AIdeaPulse
 
-AI-powered startup idea discovery platform. Scrapes demand signals from 12 sources (Reddit, Hacker News, Product Hunt, GitHub Trending, Dev.to, Lobste.rs, NewsAPI, Google Trends, Stack Exchange, GitHub Issues, Discourse Forums, PyPI/npm), runs them through Claude API for structured analysis, and serves idea briefs through a web app.
+AI-powered startup idea discovery platform. Scrapes demand signals from 13 sources (Reddit, Hacker News, Product Hunt, GitHub Trending, Dev.to, Lobste.rs, NewsAPI, Google Trends, Stack Exchange, GitHub Issues, Discourse Forums, PyPI/npm, plus crawlee-research database), runs them through Claude API for structured analysis, and serves idea briefs through a web app.
 
 ## Status
 
-Sprint 6 complete (Surpass With AI Tools) — 4 new AI-powered features deployed. 201+ ideas in production. Pro tier at $25/mo. GitHub Actions CI/CD. Launch pending.
+Sprint 6 complete (Surpass With AI Tools) — 4 new AI-powered features deployed. 201+ ideas in production. Pro tier at $25/mo. GitHub Actions CI/CD. Crawlee-research integrated as source #13. Launch pending.
 
 **Live:** https://aideapulse.com | API: https://api.aideapulse.com | Validate: https://aideapulse.com/validate | Generate: https://aideapulse.com/generate | Trends: https://aideapulse.com/trends
 
-**What's built:** 12-source pipeline → Claude three-stage analysis (classify → analyze → frameworks) → D1 storage with FTS5 full-text search → dark-theme Astro frontend. Clerk auth, Stripe Pro subscriptions, Durable Object per-feature rate limiting. AI Actions (5 deep dives per idea via Haiku), Idea Generator (personalized ideas from Smart Match profile via Sonnet), Validate My Idea (user-submitted SWOT with signal cross-referencing via Sonnet), Framework Analysis (4 scored business frameworks per idea). Smart Match, rich narratives, community signals, trends dashboard, data export, OG images.
+**What's built:** 13-source pipeline → Claude three-stage analysis (classify → analyze → frameworks) → D1 storage with FTS5 full-text search → dark-theme Astro frontend. Clerk auth, Stripe Pro subscriptions, Durable Object per-feature rate limiting. AI Actions (5 deep dives per idea via Haiku), Idea Generator (personalized ideas from Smart Match profile via Sonnet), Validate My Idea (user-submitted SWOT with signal cross-referencing via Sonnet), Framework Analysis (4 scored business frameworks per idea). Smart Match, rich narratives, community signals, trends dashboard, data export, OG images.
 
 ## Architecture
 
@@ -18,11 +18,11 @@ KITT (Python 3.12)                              Cloudflare
 │  systemd timer (23:00 CT) │                  │  Hono Worker             │
 │         │                 │                  │    ├─ POST /api/ingest   │
 │         ▼                 │                  │    ├─ POST /api/validate │
-│  12 Scrapers              │  HMAC-SHA256     │    ├─ POST /api/generate │
+│  13 Scrapers              │  HMAC-SHA256     │    ├─ POST /api/generate │
 │  ├─ Reddit, HN, PH …    │  ──────────────► │    ├─ POST /:id/actions  │
 │  ├─ SE, GH Issues …      │                  │    ├─ GET /api/ideas     │
-│  └─ Discourse, PyPI/npm  │                  │    ├─ GET /api/trends    │
-│         │                 │                  │    └─ GET /api/health    │
+│  ├─ Discourse, PyPI/npm  │                  │    ├─ GET /api/trends    │
+│  └─ Crawlee (SQLite)     │                  │    └─ GET /api/health    │
 │  Pre-filter (top ~125)   │                  │         │                │
 │         │                 │                  │         ▼                │
 │  Claude 3-stage analysis  │                  │  D1 (ideas + FTS5)       │
@@ -37,7 +37,7 @@ KITT (Python 3.12)                              Cloudflare
 └───────────────────────────┘                  └──────────────────────────┘
 ```
 
-- **Ingestion pipeline** (Python 3.12) runs on KITT, scrapes 12 sources (Reddit, HN, PH, GitHub Trending, Dev.to, Lobste.rs, NewsAPI, Google Trends, Stack Exchange, GitHub Issues, Discourse Forums, PyPI/npm)
+- **Ingestion pipeline** (Python 3.12) runs on KITT, scrapes 13 sources (Reddit, HN, PH, GitHub Trending, Dev.to, Lobste.rs, NewsAPI, Google Trends, Stack Exchange, GitHub Issues, Discourse Forums, PyPI/npm, plus crawlee-research SQLite database for YouTube/Twitter/LinkedIn/news signals)
 - **Pre-filter** keeps top ~125 signals by per-source engagement quotas before Claude API analysis
 - **Claude API analysis** produces structured idea briefs with market sizing, competitors, build complexity, 4-dimension scores, rich narrative writeups, validation playbooks, and GTM strategies
 - **Cloudflare Workers** (Hono) API with HMAC-authenticated ingest webhook, cursor-paginated list, fuzzy dedup, trends API, Pro export API
@@ -63,7 +63,7 @@ KITT (Python 3.12)                              Cloudflare
 ```
 AIdeaPulse/
   pipeline/            # Python ingestion + analysis pipeline (runs on KITT)
-    scrapers/          # 12 sources: Reddit, HN, PH, GitHub Trending/Issues, Dev.to, Lobste.rs, NewsAPI, Trends, Stack Exchange, Discourse, PyPI/npm
+    scrapers/          # 13 sources: Reddit, HN, PH, GitHub Trending/Issues, Dev.to, Lobste.rs, NewsAPI, Trends, Stack Exchange, Discourse, PyPI/npm, Crawlee
     analysis/          # Claude API analysis with JSON parsing + confidence rubric
     push/              # HMAC-authenticated webhook push with retry + spool
     prefilter.py       # Per-source engagement quotas (~125 signals total)
@@ -73,7 +73,7 @@ AIdeaPulse/
     src/helpers/       # ai-helpers.ts (Anthropic client, sanitization, rate limit keys)
     src/scoring/       # fitScore engine + unit tests
     src/               # rate-limiter-do.ts (Durable Object for atomic rate limiting)
-    migrations/        # D1 SQL schema (12 migrations including FTS5)
+    migrations/        # D1 SQL schema (13 migrations including FTS5)
     test/              # vitest + miniflare tests
   frontend/            # Astro + React islands + Tailwind (CF Pages)
     src/components/    # IdeaCard, IdeaFeed, AIActions, FrameworkAnalysis, ValidateForm, ValidationResult, IdeaGenerator, ScoreBreakdown, CommunitySignals, TrendsDashboard, TrendChart, SaveButton, ProfileSetup, ProCheckout, HeaderAuth

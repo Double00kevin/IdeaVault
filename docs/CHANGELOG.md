@@ -4,6 +4,17 @@ All notable changes to AIdeaPulse (formerly IdeaVault) will be documented in thi
 
 ## [Unreleased]
 
+### 2026-04-01 — f1be916: Integrate crawlee-research as pipeline source #13
+
+**Pipeline:**
+- feat: `pipeline/scrapers/crawlee.py` — new scraper reads from crawlee-research SQLite database (`data/crawlee.db`) on KITT via read-only connection. `CrawleeSignal` dataclass (source, title, content, url, author, score, tags, scraped_at). Pulls last 7 days by default, excludes native AIdeaPulse sources (reddit, hackernews, github) to avoid duplicate Claude API spend. Configurable via `CRAWLEE_DB_PATH` and `CRAWLEE_EXCLUDE_SOURCES` env vars
+- feat: `filter_crawlee()` in prefilter — top 15 by score
+- feat: `_format_crawlee_signal()` formatter — includes crawlee source type, score, tags, content excerpt in community signal metadata
+- feat: pipeline now scrapes 13 sources (12 native + crawlee)
+
+**D1:**
+- feat: migration 0013 — `source_type` CHECK constraint expanded to include `'crawlee'`, table recreated, indexes rebuilt, FTS5 index repopulated and sync triggers recreated
+
 ### 2026-03-31 — bd2e1f8: Sprint 6 Phase 6B — AI Actions + Idea Generator
 
 **Workers (API):**

@@ -79,6 +79,10 @@ Check items off as they ship. Log details in `docs/CHANGELOG.md`.
 - [x] D1 FTS5 virtual table — full-text search on ideas for Validate similarity matching, with sync triggers (1315bd3, 2026-03-31)
 - [x] Shared ai-helpers.ts — Anthropic client, input sanitization, JSON parsing, rate limit key generation (1315bd3, 2026-03-31)
 
+## Crawlee Integration (done)
+- [x] Crawlee-research integrated as pipeline source #13 — reads from crawlee.db on KITT, excludes native sources, configurable via env vars (f1be916, 2026-04-01)
+- [x] D1 migration 0013 — source_type CHECK expanded for 'crawlee', FTS triggers rebuilt (2026-04-01)
+
 ## Sprint 7 — Growth & Differentiation
 - [ ] Idea Builder — landing page copy, tech stack, creative assets, implementation plan (Pro, Sonnet)
 - [ ] Market Insights page — cross-source trend analysis, hot categories

@@ -2,16 +2,17 @@
 
 ## Overview
 
-AIdeaPulse is an AI-powered startup idea discovery SaaS platform. It scrapes demand signals from 12 sources (Reddit, Hacker News, Product Hunt, GitHub Trending, Dev.to, Lobste.rs, NewsAPI, Google Trends, Stack Exchange, GitHub Issues, Discourse Forums, PyPI/npm), analyzes them via Claude API, and serves structured idea briefs through a web app with free/pro/API monetization tiers.
+AIdeaPulse is an AI-powered startup idea discovery SaaS platform. It scrapes demand signals from 13 sources (Reddit, Hacker News, Product Hunt, GitHub Trending, Dev.to, Lobste.rs, NewsAPI, Google Trends, Stack Exchange, GitHub Issues, Discourse Forums, PyPI/npm, plus crawlee-research database), analyzes them via Claude API, and serves structured idea briefs through a web app with free/pro/API monetization tiers.
 
-- **Last updated:** 2026-03-31 (bd2e1f8)
-- **Status:** Sprint 6 complete — AI Actions (5 structured deep dives per idea via Haiku), Idea Generator (personalized ideas from Smart Match profile via Sonnet), Validate My Idea (user-submitted SWOT with FTS5 signal cross-referencing via Sonnet), Framework Analysis (4 plain-language framework scores per idea via pipeline). Durable Object rate limiting. @anthropic-ai/sdk on Workers. 201 ideas in production. Pro pricing set to $25/mo (changed from $12/mo on 2026-03-31). Launch posts still pending.
+- **Last updated:** 2026-04-01 (f1be916)
+- **Status:** Sprint 6 complete — AI Actions (5 structured deep dives per idea via Haiku), Idea Generator (personalized ideas from Smart Match profile via Sonnet), Validate My Idea (user-submitted SWOT with FTS5 signal cross-referencing via Sonnet), Framework Analysis (4 plain-language framework scores per idea via pipeline). Durable Object rate limiting. @anthropic-ai/sdk on Workers. 201 ideas in production. Pro pricing set to $25/mo (changed from $12/mo on 2026-03-31). Crawlee-research integrated as source #13 (f1be916, 2026-04-01). Launch posts still pending.
 
 ## Architecture
 
 | Component          | Technology                        | Where      |
 |--------------------|-----------------------------------|------------|
 | Ingestion pipeline | Python 3.12 + httpx + pytrends   | KITT       |
+| Crawlee signals    | crawlee-research SQLite (read-only) | KITT     |
 | AI analysis        | Claude API (Anthropic SDK)        | KITT       |
 | Real-time AI       | @anthropic-ai/sdk (Sonnet + Haiku) | CF Workers |
 | API/backend        | Cloudflare Workers (TypeScript)   | Cloudflare |

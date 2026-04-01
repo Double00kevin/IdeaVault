@@ -1,5 +1,5 @@
 # AIdeaPulse — Open Items & Action Tracker
-**Last Updated:** 2026-03-31
+**Last Updated:** 2026-04-01
 **Maintained by:** Kevin
 
 ---
@@ -54,6 +54,7 @@
 | Item | Notes |
 |------|-------|
 | Sprint 6 — AI Tools | 1315bd3, bd2e1f8 — Framework Analysis (pipeline), Validate My Idea (Sonnet real-time), AI Actions (Haiku real-time, 5 deep dives), Idea Generator (Sonnet, Smart Match profile). Durable Object rate limiting, FTS5 search, @anthropic-ai/sdk on Workers. ADR-005. |
+| Crawlee integration — source #13 | f1be916 — Reads crawlee.db on KITT (read-only), excludes native sources, D1 migration 0013, FTS triggers rebuilt |
 | Pro pricing $12→$25/mo | 698e8aa — New Stripe price (price_1THBLhP3Smm2ZjICcs2dSyhM), all frontend/docs updated |
 | Sprint 5 — Match Ideabrowser Core | 5edf8d4 — Rich narratives, multi-dimensional scores, community signals, trends dashboard, data export, 12-source pipeline |
 | Privacy policy + terms of service | cc4d8a8 — /privacy and /terms pages with full legal sections, footer links, cross-links, CCPA/GDPR subsections |
