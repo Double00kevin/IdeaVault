@@ -6,6 +6,7 @@ import time
 from pipeline.analysis.analyze import IdeaBrief, analyze_frameworks, analyze_signal, classify_signal, create_client
 from pipeline.config import load_config
 from pipeline.prefilter import (
+    filter_crawlee,
     filter_devto,
     filter_discourse,
     filter_github_issues,
@@ -20,6 +21,7 @@ from pipeline.prefilter import (
     filter_trends,
 )
 from pipeline.push.cloudflare import push_ideas, push_trends
+from pipeline.scrapers.crawlee import CrawleeSignal, scrape_all as scrape_crawlee
 from pipeline.scrapers.devto import DevtoSignal, scrape_all as scrape_devto
 from pipeline.scrapers.discourse import DiscourseSignal, scrape_all as scrape_discourse
 from pipeline.scrapers.github_issues import GitHubIssueSignal, scrape_all as scrape_gh_issues
@@ -268,6 +270,27 @@ def _format_package_signal(signal: PackageTrendSignal) -> tuple[str, list[str], 
     return text, [signal.url], community
 
 
+def _format_crawlee_signal(signal: CrawleeSignal) -> tuple[str, list[str], dict]:
+    """Format a Crawlee signal for Claude analysis."""
+    text = f"Crawlee ({signal.source}): {signal.title}\n"
+    text += f"Score: {signal.score}\n"
+    if signal.author:
+        text += f"Author: {signal.author}\n"
+    if signal.tags:
+        text += f"Tags: {signal.tags}\n"
+    if signal.content:
+        text += f"Content: {signal.content[:1500]}\n"
+    community = {
+        "source": "crawlee",
+        "crawlee_source": signal.source,
+        "title": signal.title,
+        "url": signal.url,
+        "engagement": {"score": signal.score},
+        "excerpt": (signal.content or "")[:300],
+    }
+    return text, [signal.url] if signal.url else [], community
+
+
 # ── Analysis helpers ───────────────────────────────────────────────────
 
 
@@ -331,7 +354,7 @@ def run() -> None:
     logger.info("Config loaded successfully")
 
     # Step 1: Scrape signals from all sources
-    logger.info("Scraping signals from 12 sources...")
+    logger.info("Scraping signals from 13 sources...")
     reddit_signals = scrape_reddit()
     hn_signals = scrape_hn()
     ph_signals = scrape_ph(config.producthunt_access_token)
@@ -344,6 +367,7 @@ def run() -> None:
     gh_issues_signals = scrape_gh_issues()
     discourse_signals = scrape_discourse()
     package_signals = scrape_packages()
+    crawlee_signals = scrape_crawlee()
 
     source_counts = {
         "Reddit": len(reddit_signals),
@@ -358,6 +382,7 @@ def run() -> None:
         "GH Issues": len(gh_issues_signals),
         "Discourse": len(discourse_signals),
         "Packages": len(package_signals),
+        "Crawlee": len(crawlee_signals),
     }
     total_raw = sum(source_counts.values())
     logger.info("Raw signals: %d total — %s", total_raw, source_counts)
@@ -376,6 +401,7 @@ def run() -> None:
     gh_issues_filtered = filter_github_issues(gh_issues_signals)
     discourse_filtered = filter_discourse(discourse_signals)
     package_filtered = filter_package_trends(package_signals)
+    crawlee_filtered = filter_crawlee(crawlee_signals)
 
     # Step 3: Two-stage analysis with Claude API
     # Stage 1 (Haiku): classify signals as pass/skip — fast + cheap
@@ -399,6 +425,7 @@ def run() -> None:
         (gh_issues_filtered, _format_gh_issues_signal, "github_issues"),
         (discourse_filtered, _format_discourse_signal, "discourse"),
         (package_filtered, _format_package_signal, "package_trends"),
+        (crawlee_filtered, _format_crawlee_signal, "crawlee"),
     ]
 
     for signals, formatter, source_type in batches:

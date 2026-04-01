@@ -29,6 +29,7 @@ from pipeline.scrapers.stackexchange import StackExchangeSignal
 from pipeline.scrapers.github_issues import GitHubIssueSignal
 from pipeline.scrapers.discourse import DiscourseSignal
 from pipeline.scrapers.package_trends import PackageTrendSignal
+from pipeline.scrapers.crawlee import CrawleeSignal
 
 logger = logging.getLogger("aideapulse.prefilter")
 
@@ -215,6 +216,23 @@ def filter_package_trends(
     filtered = sorted_signals[:top_n]
     logger.info(
         "Package Trends: %d -> %d signals (filtered by downloads)",
+        len(signals), len(filtered),
+    )
+    return filtered
+
+
+def filter_crawlee(
+    signals: list[CrawleeSignal], top_n: int = 15,
+) -> list[CrawleeSignal]:
+    """Keep top N Crawlee signals by score."""
+    sorted_signals = sorted(
+        signals,
+        key=lambda s: s.score,
+        reverse=True,
+    )
+    filtered = sorted_signals[:top_n]
+    logger.info(
+        "Crawlee: %d -> %d signals (filtered by score)",
         len(signals), len(filtered),
     )
     return filtered
