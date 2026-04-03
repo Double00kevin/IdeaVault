@@ -1,6 +1,6 @@
 # AIdeaPulse — Roadmap
 
-Check items off as they ship. Log details in `docs/CHANGELOG.md`.
+Check items off as they ship. Log details in `docs/changelog.md`.
 
 ## Sprint 1 — Foundation (done)
 - [x] Project scaffold and repo structure

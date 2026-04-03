@@ -24,6 +24,36 @@ AIdeaPulse is an AI-powered startup idea discovery SaaS platform. It scrapes dem
 | Payments           | Stripe                            | CF Workers |
 | Scheduling         | systemd timer (23:00 Central daily, DST-aware) | KITT |
 
+## Key References
+
+- `docs/changelog.md` — timestamped record of every change
+- `docs/roadmap.md` — feature roadmap (check off items as they ship)
+- `decisions/` — architecture decision records (ADRs)
+
+## Repo Structure
+
+```
+AIdeaPulse/
+├── .claude/
+│   ├── CLAUDE.md
+│   ├── rules/
+│   └── settings.local.json
+├── decisions/          # ADRs (root-level)
+├── docs/
+│   ├── changelog.md
+│   ├── roadmap.md
+│   ├── OPEN_ITEMS.md
+│   ├── decisions/      # additional decision docs
+│   ├── images/
+│   ├── specs/
+│   └── testing-results/
+├── frontend/           # Astro + React + Tailwind
+├── pipeline/           # Python ingestion pipeline
+├── workers/            # Cloudflare Workers (TypeScript)
+├── README.md
+└── TODOS.md
+```
+
 ## Security (non-negotiable)
 
 - No secrets in repo — all API keys via env vars
@@ -46,7 +76,7 @@ AIdeaPulse is an AI-powered startup idea discovery SaaS platform. It scrapes dem
 
 ### Git
 - Conventional commits: feat:, fix:, chore:, docs:
-- Every change logged in docs/CHANGELOG.md
+- Every change logged in docs/changelog.md
 - Security changes noted separately
 - Significant architecture decisions logged in docs/decisions/ as ADRs
 
@@ -55,7 +85,7 @@ AIdeaPulse is an AI-powered startup idea discovery SaaS platform. It scrapes dem
 When asked to "close the loop":
 1. `git log -1 --oneline` to get latest commit.
 2. Update "Last updated" date in this file.
-3. Append summary to `docs/CHANGELOG.md` with commit hash.
+3. Append summary to `docs/changelog.md` with commit hash.
 4. Verify matching roadmap item is checked off in `docs/roadmap.md`.
 5. Verify `README.md` reflects current capabilities — update if stale.
 6. Full change audit:

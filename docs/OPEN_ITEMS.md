@@ -79,7 +79,7 @@
 
 | Document | Purpose |
 |----------|---------|
-| `docs/CHANGELOG.md` | Timestamped record of every file change |
+| `docs/changelog.md` | Timestamped record of every file change |
 | `docs/roadmap.md` | Feature roadmap (check off items as they ship) |
 | `.claude/CLAUDE.md` | Claude's project context (auto-loaded each session) |
 | `decisions/` | Decision log — auto-synced to Obsidian vault |
