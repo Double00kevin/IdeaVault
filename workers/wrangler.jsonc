@@ -37,7 +37,6 @@
     "ENVIRONMENT": "production"
   }
   // Secrets (set via `wrangler secret put`):
-  // INGEST_WEBHOOK_SECRET
+  // INGEST_WEBHOOK_SECRET (internal endpoint auth for embed, trends, digest)
   // RESEND_API_KEY (optional, for email digest)
-  // ANTHROPIC_API_KEY (Sprint 6: AI features)
 }

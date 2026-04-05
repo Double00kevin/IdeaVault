@@ -83,6 +83,14 @@ Check items off as they ship. Log details in `docs/changelog.md`.
 - [x] Crawlee-research integrated as pipeline source #13 — reads from crawlee.db on KITT, excludes native sources, configurable via env vars (f1be916, 2026-04-01)
 - [x] D1 migration 0013 — source_type CHECK expanded for 'crawlee', FTS triggers rebuilt (2026-04-01)
 
+## Architecture: Claude Code Analysis Migration (done)
+- [x] Remove Anthropic API dependency from pipeline and Workers (2026-04-05)
+- [x] Replace Python pipeline with Claude Code analysis workflow reading crawlee-research exports (2026-04-05)
+- [x] D1 MCP write path verified — Claude Code writes ideas directly to D1 (2026-04-05)
+- [x] Remove AI tool endpoints (validate, actions, generate) and frontend pages (2026-04-05)
+- [x] Disable systemd pipeline timer, archive pipeline directory (2026-04-05)
+- [x] Workers and frontend redeployed without Anthropic SDK (2026-04-05)
+
 ## Sprint 7 — Growth & Differentiation
 - [ ] Idea Builder — landing page copy, tech stack, creative assets, implementation plan (Pro, Sonnet)
 - [ ] Market Insights page — cross-source trend analysis, hot categories

@@ -3,7 +3,6 @@ import SaveButton from "./SaveButton";
 import ScoreBreakdown from "./ScoreBreakdown";
 import CommunitySignals from "./CommunitySignals";
 import FrameworkAnalysis from "./FrameworkAnalysis";
-import AIActions from "./AIActions";
 
 interface Idea {
   id: string;
@@ -410,8 +409,6 @@ export default function IdeaCard({
             />
           )}
 
-          {/* Sprint 6: AI Actions (Deep Dive) */}
-          <AIActions ideaId={idea.id} tier={tier} />
 
           {/* Sprint 5: Narrative Writeup */}
           {idea.narrative_writeup && (

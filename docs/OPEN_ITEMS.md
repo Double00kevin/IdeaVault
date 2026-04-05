@@ -1,5 +1,5 @@
 # AIdeaPulse — Open Items & Action Tracker
-**Last Updated:** 2026-04-01
+**Last Updated:** 2026-04-05
 **Maintained by:** Kevin
 
 ---
@@ -35,7 +35,7 @@
 | Core user persona | Solo indie hacker with day job | Sprint 1 |
 | D1 row limits | 10GB free, fine for year 1 | Sprint 2 |
 | R2 usage | Not needed for MVP, raw data stays on KITT | Sprint 2 |
-| KITT→CF auth | HMAC-SHA256 with timestamp replay protection | Sprint 2 |
+| Remove Anthropic API | Claude Code on KITT replaces pipeline + Workers AI endpoints | 2026-04-05 |
 
 ---
 
@@ -53,7 +53,8 @@
 
 | Item | Notes |
 |------|-------|
-| Sprint 6 — AI Tools | 1315bd3, bd2e1f8 — Framework Analysis (pipeline), Validate My Idea (Sonnet real-time), AI Actions (Haiku real-time, 5 deep dives), Idea Generator (Sonnet, Smart Match profile). Durable Object rate limiting, FTS5 search, @anthropic-ai/sdk on Workers. ADR-005. |
+| Anthropic API removal | 2026-04-05 — Removed pipeline, @anthropic-ai/sdk, AI tool endpoints (validate/actions/generate). Analysis now via Claude Code on KITT reading crawlee exports, writing to D1 via MCP. |
+| Sprint 6 — AI Tools | 1315bd3, bd2e1f8 — Framework Analysis (pipeline), Validate My Idea, AI Actions, Idea Generator. Durable Object rate limiting, FTS5 search. ADR-005. **Note: AI tool endpoints removed 2026-04-05.** |
 | Crawlee integration — source #13 | f1be916 — Reads crawlee.db on KITT (read-only), excludes native sources, D1 migration 0013, FTS triggers rebuilt |
 | Pro pricing $12→$25/mo | 698e8aa — New Stripe price (price_1THBLhP3Smm2ZjICcs2dSyhM), all frontend/docs updated |
 | Sprint 5 — Match Ideabrowser Core | 5edf8d4 — Rich narratives, multi-dimensional scores, community signals, trends dashboard, data export, 12-source pipeline |

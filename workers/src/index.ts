@@ -1,6 +1,5 @@
 import { Hono } from "hono";
 import { cors } from "hono/cors";
-import { ingestHandler } from "./routes/ingest";
 import { ideasHandler } from "./routes/ideas";
 import { savedHandler } from "./routes/saved";
 import { profileHandler } from "./routes/profile";
@@ -10,10 +9,6 @@ import { healthHandler } from "./routes/health";
 import { ogHandler } from "./routes/og";
 import { trendsHandler } from "./routes/trends";
 import { exportHandler } from "./routes/export";
-import { validateHandler } from "./routes/validate";
-import { actionsHandler } from "./routes/actions";
-import { generateHandler } from "./routes/generate";
-import { aiTestHandler } from "./routes/ai-test";
 import { searchHandler } from "./routes/search";
 import { embedHandler } from "./routes/embed";
 import { requireAuth } from "./middleware/auth";
@@ -30,8 +25,6 @@ export interface Env {
   STRIPE_SECRET_KEY: string;
   STRIPE_WEBHOOK_SECRET: string;
   STRIPE_PRICE_ID: string;
-  ANTHROPIC_API_KEY: string;
-  CF_AIG_TOKEN: string;
   ENVIRONMENT: string;
 }
 
@@ -45,7 +38,6 @@ app.use("/api/*", cors({
 }));
 
 // Routes
-app.route("/api/ingest", ingestHandler);
 app.route("/api/ideas", ideasHandler);
 app.route("/api/saved", savedHandler);
 app.route("/api/profile", profileHandler);
@@ -55,10 +47,6 @@ app.route("/api/health", healthHandler);
 app.route("/api/og", ogHandler);
 app.route("/api/trends", trendsHandler);
 app.route("/api/export", exportHandler);
-app.route("/api/validate", validateHandler);
-app.route("/api/ideas", actionsHandler);
-app.route("/api/generate", generateHandler);
-app.route("/api/ai-test", aiTestHandler);
 app.route("/api/search", searchHandler);
 app.route("/api/embed", embedHandler);
 

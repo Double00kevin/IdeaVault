@@ -4,6 +4,27 @@ All notable changes to AIdeaPulse (formerly IdeaVault) will be documented in thi
 
 ## [Unreleased]
 
+### 2026-04-05 — Remove Anthropic API, replace with Claude Code analysis
+
+**Architecture (breaking):**
+- Removed entire Python ingestion pipeline (`pipeline/` directory archived to `pipeline-archive-2026-04-05.tar.gz`)
+- Removed `systemd/` timer and service (disabled `aideapulse-pipeline.timer`)
+- Removed `@anthropic-ai/sdk` from Workers
+- Removed 6 Workers source files: `ingest.ts`, `validate.ts`, `actions.ts`, `generate.ts`, `ai-test.ts`, `ai-helpers.ts`
+- Removed 3 frontend pages/components: `validate.astro`, `generate.astro`, `ValidateForm.tsx`, `IdeaGenerator.tsx`, `AIActions.tsx`
+- Removed nav links for Validate and Generate
+- Removed Env bindings: `ANTHROPIC_API_KEY`, `CF_AIG_TOKEN`, `INGEST_WEBHOOK_SECRET`
+
+**New workflow:**
+- Signal analysis now handled by Claude Code on KITT reading crawlee-research exports directly
+- "Analyze crawlee exports" workflow documented in `.claude/CLAUDE.md` with full criteria (pre-filter quotas, classification, analysis schema, framework evaluation, D1 write via MCP)
+- D1 MCP write path verified (insert/read/delete test)
+- Manual trigger — no cron, Kevin initiates analysis sessions
+
+**Deployed:**
+- Workers redeployed (no Anthropic SDK, no AI routes)
+- Frontend redeployed (no validate/generate pages, no AI actions component)
+
 ### 2026-04-01 — f1be916: Integrate crawlee-research as pipeline source #13
 
 **Pipeline:**

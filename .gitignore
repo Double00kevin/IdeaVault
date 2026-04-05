@@ -39,5 +39,8 @@ dist/
 .astro/
 .gstack/
 
+# Archives
+*.tar.gz
+
 # Working prompts
 _reference/

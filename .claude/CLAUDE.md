@@ -2,19 +2,18 @@
 
 ## Overview
 
-AIdeaPulse is an AI-powered startup idea discovery SaaS platform. It scrapes demand signals from 13 sources (Reddit, Hacker News, Product Hunt, GitHub Trending, Dev.to, Lobste.rs, NewsAPI, Google Trends, Stack Exchange, GitHub Issues, Discourse Forums, PyPI/npm, plus crawlee-research database), analyzes them via Claude API, and serves structured idea briefs through a web app with free/pro/API monetization tiers.
+AIdeaPulse is an AI-powered startup idea discovery SaaS platform. crawlee-research scrapes demand signals from 14 sources, Claude Code analyzes them directly (no Anthropic API), and structured idea briefs are served through a web app with free/pro monetization tiers.
 
-- **Last updated:** 2026-04-01 (f1be916)
-- **Status:** Sprint 6 complete — AI Actions (5 structured deep dives per idea via Haiku), Idea Generator (personalized ideas from Smart Match profile via Sonnet), Validate My Idea (user-submitted SWOT with FTS5 signal cross-referencing via Sonnet), Framework Analysis (4 plain-language framework scores per idea via pipeline). Durable Object rate limiting. @anthropic-ai/sdk on Workers. 201 ideas in production. Pro pricing set to $25/mo (changed from $12/mo on 2026-03-31). Crawlee-research integrated as source #13 (f1be916, 2026-04-01). Launch posts still pending.
+- **Last updated:** 2026-04-05
+- **Status:** Anthropic API removed. Analysis now handled by Claude Code on KITT reading crawlee-research exports and writing to D1 via MCP. Pipeline decommissioned. 201+ ideas in production. Pro pricing $25/mo. Launch posts still pending.
 
 ## Architecture
 
 | Component          | Technology                        | Where      |
 |--------------------|-----------------------------------|------------|
-| Ingestion pipeline | Python 3.12 + httpx + pytrends   | KITT       |
-| Crawlee signals    | crawlee-research SQLite (read-only) | KITT     |
-| AI analysis        | Claude API (Anthropic SDK)        | KITT       |
-| Real-time AI       | @anthropic-ai/sdk (Sonnet + Haiku) | CF Workers |
+| Signal scraping    | crawlee-research (TypeScript)     | KITT       |
+| AI analysis        | Claude Code (manual trigger)      | KITT       |
+| D1 writes          | Cloudflare MCP tool               | KITT       |
 | API/backend        | Cloudflare Workers (TypeScript)   | Cloudflare |
 | Database           | Cloudflare D1 (SQLite + FTS5)     | Cloudflare |
 | Rate limiting      | Durable Objects (atomic counters) | Cloudflare |
@@ -22,7 +21,135 @@ AIdeaPulse is an AI-powered startup idea discovery SaaS platform. It scrapes dem
 | Object storage     | Cloudflare R2                     | Cloudflare |
 | Auth               | Clerk (prod keys, global window.Clerk) | CF Workers |
 | Payments           | Stripe                            | CF Workers |
-| Scheduling         | systemd timer (23:00 Central daily, DST-aware) | KITT |
+
+## Analyze Crawlee Exports
+
+When Kevin says "analyze crawlee exports", follow this workflow. Process one source at a time.
+
+### 1. Read latest exports
+
+Exports live at `~/crawlee-research/storage/exports/`. Files are named `{source}-{ISO-timestamp}.json`. For each source prefix, read only the most recent file (sort by timestamp in filename).
+
+### 2. Source mapping
+
+| Export prefix | D1 source_type | Pre-filter: keep top N by |
+|---|---|---|
+| reddit | reddit | 20 by (score + numComments) |
+| hackernews | hackernews | 15 by points (Ask/Show HN boosted 2x) |
+| producthunt | producthunt | 5 by votesCount |
+| github-trending | github_trending | 10 by stars |
+| github-search | github_trending | 10 by stars |
+| github-issues | github_issues | 15 by reactions |
+| devto | devto | 10 by (reactions + comments) |
+| lobsters | lobsters | 10 by score |
+| newsapi | newsapi | 10 as-is |
+| stackexchange | stackexchange | 15 by score (unanswered boosted 2x) |
+| discourse | discourse | 15 by (likes + replies) |
+| packagetrends | package_trends | 15 by downloadsRecent |
+
+Skip: youtube, linkedin-jobs, news, github-readme.
+
+### 3. Deduplicate against existing ideas
+
+Before analyzing, query D1 for all existing `title_normalized` values:
+
+```sql
+SELECT title_normalized FROM ideas
+```
+
+For each signal, normalize its title (lowercase, trim, collapse whitespace) and check Jaccard word-set similarity against all existing titles. If similarity > 0.85, skip it.
+
+Jaccard similarity = |intersection of word sets| / |union of word sets|.
+
+### 4. Classify each signal
+
+For each pre-filtered signal, decide: does this represent a real startup demand signal?
+
+**Pass** signals that reveal: unmet needs, complaints about existing tools, requests for solutions, emerging markets, or high-engagement discussions about building something.
+
+**Skip** signals that are: generic news, self-promotion, tutorials without pain points, memes, already-solved problems, or too vague to extract a startup idea from.
+
+Target ~40-60% pass rate. Be selective.
+
+### 5. Analyze passing signals
+
+For each passing signal, produce a structured idea with ALL of these fields:
+
+- **title**: Short idea title (under 60 chars)
+- **product_name**: Creative, memorable product name
+- **one_liner**: One sentence pitch
+- **problem_statement**: What specific problem does this solve?
+- **target_audience**: Who specifically is this for?
+- **market_size**: `{"tam": "$X", "sam": "$X", "som": "$X"}` with dollar amounts
+- **competitors**: Array of specific competitor names
+- **build_complexity**: "low", "medium", or "high"
+- **build_timeline**: Estimated time to MVP (e.g., "2 weekends", "1 month")
+- **monetization_angle**: How to make money (specific pricing)
+- **scores**: Each 0-100:
+  - **opportunity**: Market size clarity + competitive gap. Large clear market with few funded competitors = high.
+  - **pain_level**: Signal engagement strength + problem urgency. High upvotes/comments = high.
+  - **builder_confidence**: Technical feasibility + timeline realism. Simple stack, clear MVP scope = high.
+  - **timing**: Trend velocity + market readiness. Rising volume, regulatory changes, new tech enablers = high.
+- **confidence_score**: opportunity×0.30 + pain_level×0.25 + builder_confidence×0.25 + timing×0.20
+- **narrative_writeup**: 3-4 paragraphs: (1) the problem and why it exists now, (2) what the product does, (3) how to validate it, (4) monetization and growth path. Use product_name. Direct, practical language.
+- **validation_playbook**: 3-5 concrete, actionable steps (e.g., "Post in r/freelance asking about this pain point")
+- **gtm_strategy**: Specific channels, pricing strategy, partnerships, how to get first 100 paying customers
+- **source_links**: Array of URLs from the original signal
+- **community_signals**: Array of objects with raw signal data that inspired this idea
+
+### 6. Framework analysis
+
+For ideas with confidence_score >= 30, produce 4 framework evaluations:
+
+```json
+[
+  {"label": "Is this worth building?", "framework": "Value Equation", "score": 0-10, "explanation": "2-3 sentences"},
+  {"label": "Who would pay and why?", "framework": "ACP", "score": 0-10, "explanation": "2-3 sentences"},
+  {"label": "How does this stack up?", "framework": "Value Matrix", "score": 0-10, "explanation": "2-3 sentences"},
+  {"label": "Where's the money?", "framework": "Value Ladder", "score": 0-10, "explanation": "2-3 sentences"}
+]
+```
+
+Score rubric: 8-10 = strong signal, clear path. 5-7 = mixed, needs validation. 1-4 = weak, significant concerns.
+
+### 7. Write to D1
+
+Use the `mcp__claude_ai_Cloudflare_Developer_Platform__d1_database_query` MCP tool.
+
+D1 database: `ideavault` (ID: `006d427e-0833-4a94-9453-b6730b4a087c`)
+
+For each analyzed idea, run:
+
+```sql
+INSERT OR IGNORE INTO ideas
+  (id, title, title_normalized, one_liner, problem_statement,
+   target_audience, market_size_json, competitors_json, competitor_count,
+   build_complexity, build_timeline, monetization_angle,
+   confidence_score, source_links_json, source_type,
+   narrative_writeup, product_name, validation_playbook, gtm_strategy,
+   scores_json, community_signals_json, frameworks_json)
+VALUES
+  ('{uuid}', '{title}', '{normalized_title}', '{one_liner}', '{problem_statement}',
+   '{target_audience}', '{market_size_json}', '{competitors_json}', {competitor_count},
+   '{build_complexity}', '{build_timeline}', '{monetization_angle}',
+   {confidence_score}, '{source_links_json}', '{source_type}',
+   '{narrative_writeup}', '{product_name}', '{validation_playbook}', '{gtm_strategy}',
+   '{scores_json}', '{community_signals_json}', '{frameworks_json}')
+```
+
+- Generate a UUID v4 for `id`
+- `title_normalized` = lowercase, trimmed, whitespace-collapsed version of title
+- All JSON fields (market_size, competitors, source_links, scores, community_signals, frameworks) must be JSON-stringified strings
+- `frameworks_json` is the JSON array from step 6, or `{}` if confidence < 30
+
+### 8. Report results
+
+After all sources are processed, print a summary:
+- Signals read per source
+- Signals after pre-filter
+- Signals that passed classification
+- Ideas written to D1
+- Duplicates skipped
 
 ## Key References
 
@@ -48,7 +175,6 @@ AIdeaPulse/
 │   ├── specs/
 │   └── testing-results/
 ├── frontend/           # Astro + React + Tailwind
-├── pipeline/           # Python ingestion pipeline
 ├── workers/            # Cloudflare Workers (TypeScript)
 ├── README.md
 └── TODOS.md
@@ -57,18 +183,10 @@ AIdeaPulse/
 ## Security (non-negotiable)
 
 - No secrets in repo — all API keys via env vars
-- KITT->CF ingest webhook uses HMAC-SHA256 signature (timing-safe compare, 5-min timestamp window)
-- Password hashing with argon2 (or bcrypt on Workers, Clerk recommended for MVP)
-- JWT with short expiry + refresh tokens
 - Input validation on all API endpoints
 - Rate limiting at Cloudflare edge
 
 ## Code Conventions
-
-### Python (pipeline/)
-- Python 3.12+, type hints everywhere, docstrings on public functions
-- Linting: ruff
-- Config via env vars (python-dotenv for local dev, never committed)
 
 ### TypeScript (workers/, frontend/)
 - Strict mode, eslint
